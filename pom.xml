@@ -48,12 +48,15 @@
 
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.flexmojos</groupId>
+        <artifactId>flexmojos-maven-plugin</artifactId>
+        <configuration>
+          <debug>true</debug>
+          <fixedLiteralVector>false</fixedLiteralVector>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
-
-  <distributionManagement>
-    <repository>
-      <id>flyti-thirdparty</id>
-      <url>http://flyti.org:8081/content/repositories/thirdparty</url>
-    </repository>
-  </distributionManagement>
 </project>
