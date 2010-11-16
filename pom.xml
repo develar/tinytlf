@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.flyti</groupId>
+    <artifactId>flash-forge</artifactId>
+    <version>17</version>
+  </parent>
+
+  <groupId>org.tinytlf</groupId>
+  <artifactId>tinytlfAggregator</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>tinytlf-core</module>
+    <module>tinytlf-components</module>
+    <module>tinytlf-fte-utils</module>
+    <module>tinytlf-gestures</module>
+    <module>tinytlf-layouts</module>
+    <module>tinytlf-xhtml</module>
+    <module>tinytlf-decorations</module>
+  </modules>
+
+  <developers>
+    <developer>
+      <name>Paul Taylor</name>
+      <url>http://github.com/guyinthechair</url>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>Mozilla Public License 1.1</name>
+      <url>http://www.mozilla.org/MPL</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.adobe.flex.framework</groupId>
+      <artifactId>playerglobal</artifactId>
+      <type>swc</type>
+      <scope>external</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+  </build>
+
+  <distributionManagement>
+    <repository>
+      <id>flyti-thirdparty</id>
+      <url>http://flyti.org:8081/content/repositories/thirdparty</url>
+    </repository>
+  </distributionManagement>
+</project>
