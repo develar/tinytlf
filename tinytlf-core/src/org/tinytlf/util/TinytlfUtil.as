@@ -140,7 +140,7 @@ package org.tinytlf.util
 				if(block.userData is LayoutProperties)
 					return LayoutProperties(block.userData);
 				else
-					block.userData = new LayoutProperties();
+					return block.userData = new LayoutProperties();
 			}
 			
 			return new LayoutProperties(from);

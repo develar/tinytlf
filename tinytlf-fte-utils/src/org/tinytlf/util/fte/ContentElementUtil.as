@@ -48,17 +48,16 @@ package org.tinytlf.util.fte
 				
 				if(line.validity != TextLineValidity.VALID || !tlmrs)
 					continue;
-				
-				tlmrs = tlmrs.concat();
-				
-				while(tlmrs.length)
+
+        for (var i:int = tlmrs.length - 1; i > -1; i--)
 				{
-					tlmr = tlmrs.pop();
-					if(tlmr.mirror === element.eventMirror)
+					tlmr = tlmrs[i];
+					if(tlmr.element == element && tlmr.mirror === element.eventMirror)
 						regions.push(tlmr);
 				}
 			}
-			
+
+      regions.fixed = true;
 			return regions;
 		}
 		
