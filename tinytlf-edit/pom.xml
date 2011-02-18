@@ -8,13 +8,14 @@
     <version>1.0.2</version>
   </parent>
 
-  <artifactId>gestures</artifactId>
+  <artifactId>edit</artifactId>
   <packaging>swc</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.tinytlf</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>xhtml</artifactId>
+      <version>1.0.2</version>
       <type>swc</type>
     </dependency>
   </dependencies>

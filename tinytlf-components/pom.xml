@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.tinytlf</groupId>
     <artifactId>tinytlfAggregator</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
   </parent>
 
   <artifactId>components</artifactId>
@@ -15,19 +15,19 @@
     <dependency>
       <groupId>org.tinytlf</groupId>
       <artifactId>xhtml</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
       <type>swc</type>
     </dependency>
     <dependency>
       <groupId>org.tinytlf</groupId>
       <artifactId>decorations</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
       <type>swc</type>
     </dependency>
     <dependency>
       <groupId>com.minimalcomps</groupId>
       <artifactId>minimalcomps</artifactId>
-      <version>0.9.5</version>
+      <version>0.9.7</version>
       <type>swc</type>
     </dependency>
     <dependency>

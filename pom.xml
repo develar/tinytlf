@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.flyti</groupId>
     <artifactId>flash-forge</artifactId>
-    <version>21</version>
+    <version>22</version>
   </parent>
 
   <groupId>org.tinytlf</groupId>
   <artifactId>tinytlfAggregator</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -19,8 +19,10 @@
     <module>tinytlf-fte-utils</module>
     <module>tinytlf-gestures</module>
     <module>tinytlf-layouts</module>
+    <module>tinytlf-model</module>
     <module>tinytlf-xhtml</module>
     <module>tinytlf-decorations</module>
+    <module>tinytlf-edit</module>
   </modules>
 
   <developers>
@@ -37,6 +39,17 @@
     </license>
   </licenses>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.tinytlf</groupId>
+        <artifactId>core</artifactId>
+        <version>1.0.2</version>
+        <type>swc</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
   <dependencies>
     <dependency>
       <groupId>com.adobe.flex.framework</groupId>

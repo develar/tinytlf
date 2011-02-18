@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.tinytlf</groupId>
     <artifactId>tinytlfAggregator</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
   </parent>
 
   <artifactId>xhtml</artifactId>
@@ -14,14 +14,20 @@
   <dependencies>
     <dependency>
       <groupId>org.tinytlf</groupId>
+      <artifactId>model</artifactId>
+      <version>1.0.2</version>
+      <type>swc</type>
+    </dependency>
+    <dependency>
+      <groupId>org.tinytlf</groupId>
       <artifactId>layouts</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
       <type>swc</type>
     </dependency>
     <dependency>
       <groupId>org.tinytlf</groupId>
       <artifactId>gestures</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
       <type>swc</type>
     </dependency>
     <dependency>

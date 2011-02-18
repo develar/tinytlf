@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.tinytlf</groupId>
     <artifactId>tinytlfAggregator</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
   </parent>
 
   <artifactId>decorations</artifactId>
@@ -15,7 +15,6 @@
     <dependency>
       <groupId>org.tinytlf</groupId>
       <artifactId>core</artifactId>
-      <version>1.0.1</version>
       <type>swc</type>
     </dependency>
   </dependencies>
