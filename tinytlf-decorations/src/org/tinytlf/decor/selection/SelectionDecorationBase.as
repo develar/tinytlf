@@ -20,11 +20,9 @@ package org.tinytlf.decor.selection
 		override public function setup(layer:int = 2, ... parameters):Vector.<Rectangle>
 		{
 			// We need to resolve some rects from our selection indicies.
-			// Use the selection from the ITextEngine, don't force someone to 
-			// pass them in as an argument. I suppose this violates 
-			// encapsulation, but meh.
 			var rects:Vector.<Rectangle> = new <Rectangle>[];
-			var pt:Point = engine.selection.clone();
+			// this must be a Point object
+			var pt:Point = Point(parameters[0]).clone();
 			var a:ITextEngineAnalytics = engine.analytics;
 			var block:TextBlock;
 			var index:int = 0;
@@ -36,24 +34,26 @@ package org.tinytlf.decor.selection
 			{
 				index = a.indexAtContent(start);
 				
+				if(start == a.contentLength)
+					index = a.numBlocks - 1;
+				
 				if(index == -1)
 					break;
 				
-				block = a.blockAtIndex(index);
+				block = a.getBlockAt(index);
 				
 				if(block)
 				{
 					indicies = getBlockSelectionIndicies(block, pt.clone());
 					
 					if(indicies.x == indicies.x && indicies.y == indicies.y)
-					{
 						rects = rects.concat(getBlockRects(block, indicies));
-					}
 					else
-					{
 						break;
-					}
 				}
+				
+				if(start == a.contentLength)
+					break;
 				
 				start = a.indexContentStart(index) + a.indexContentSize(index);
 			}
@@ -61,7 +61,7 @@ package org.tinytlf.decor.selection
 			return rects;
 		}
 		
-		private function getBlockSelectionIndicies(block:TextBlock, selection:Point):Point
+		protected function getBlockSelectionIndicies(block:TextBlock, selection:Point):Point
 		{
 			var a:ITextEngineAnalytics = engine.analytics;
 			var start:Number = a.blockContentStart(block);
@@ -71,9 +71,7 @@ package org.tinytlf.decor.selection
 			var p:Point = new Point();
 			
 			if(selection.y < start || selection.x > end)
-			{
 				p.x = p.y = NaN;
-			}
 			else
 			{
 				if(selection.x <= start)
@@ -93,7 +91,7 @@ package org.tinytlf.decor.selection
 			return p;
 		}
 		
-		private function getBlockRects(block:TextBlock, selectionIndicies:Point):Vector.<Rectangle>
+		protected function getBlockRects(block:TextBlock, selectionIndicies:Point):Vector.<Rectangle>
 		{
 			var a:ITextEngineAnalytics = engine.analytics;
 			var blockSize:Number = a.blockContentSize(block);
@@ -104,13 +102,16 @@ package org.tinytlf.decor.selection
 			}
 			
 			var rects:Vector.<Rectangle> = new <Rectangle>[];
-			var line:TextLine = block.getTextLineAtCharIndex(selectionIndicies.x);
+			var blockLength:int = a.blockContentSize(block);
+			var line:TextLine = block.getTextLineAtCharIndex(Math.min(selectionIndicies.x, blockLength - 1));
 			var indicies:Point;
 			
 			while(line)
 			{
 				indicies = getLineSelectionIndicies(line, selectionIndicies);
-				if(indicies.x == indicies.x && indicies.y == indicies.y)
+				if(	indicies.x == indicies.x && 
+					indicies.y == indicies.y &&
+					indicies.y > indicies.x)
 				{
 					rects.push(getLineRect(line, indicies));
 					line = line.nextLine;
@@ -124,11 +125,11 @@ package org.tinytlf.decor.selection
 			return rects;
 		}
 		
-		private function getLineSelectionIndicies(line:TextLine, selection:Point):Point
+		protected function getLineSelectionIndicies(line:TextLine, selection:Point):Point
 		{
 			var p:Point = new Point();
 			var begin:int = line.textBlockBeginIndex;
-			var end:int = begin + line.atomCount - 1;
+			var end:int = begin + line.atomCount;
 			
 			if(selection.y < begin || selection.x > end)
 			{
@@ -150,21 +151,25 @@ package org.tinytlf.decor.selection
 			return p;
 		}
 		
-		private function getLineRect(line:TextLine, selectionIndicies:Point):Rectangle
+		protected function getLineRect(line:TextLine, selectionIndicies:Point):Rectangle
 		{
 			var startIndex:int = selectionIndicies.x;
 			var endIndex:int = selectionIndicies.y;
 			
 			if(startIndex >= line.atomCount)
 				startIndex = line.atomCount - 1;
-			if(endIndex >= line.atomCount)
-				endIndex = line.atomCount - 1;
+			if(endIndex > line.atomCount)
+				endIndex = line.atomCount;
 			
 			var rect:Rectangle = line.getAtomBounds(startIndex);
 			rect.width ||= 1;
 			rect.height ||= 1;
 			
-			var rect2:Rectangle = line.getAtomBounds(endIndex);
+			var rect2:Rectangle = line.getAtomBounds(Math.max(endIndex - 1, 0));
+			
+			if(endIndex >= line.atomCount)
+				rect2 = new Rectangle(line.specifiedWidth);
+			
 			rect2.width ||= 1;
 			rect2.height ||= 1;
 			

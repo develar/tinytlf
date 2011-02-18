@@ -27,6 +27,20 @@ package org.tinytlf.util
 			return globalIndex - blockStart - line.textBlockBeginIndex;
 		}
 		
+		public static function globalIndexToTextLine(engine:ITextEngine, globalIndex:int):TextLine
+		{
+			var a:ITextEngineAnalytics = engine.analytics;
+			var block:TextBlock = a.blockAtContent(globalIndex);
+			
+			if(globalIndex >= a.contentLength)
+			{
+				block = a.getBlockAt(a.numBlocks - 1);
+				--globalIndex;
+			}
+			
+			return block.getTextLineAtCharIndex(globalIndex - a.blockContentStart(block));
+		}
+		
 		public static function globalIndexToAtomBounds(engine:ITextEngine, globalIndex:int):Rectangle
 		{
 			var a:ITextEngineAnalytics = engine.analytics;
@@ -73,6 +87,40 @@ package org.tinytlf.util
 			return a.blockContentStart(b) + l.textBlockBeginIndex + atomIndex;
 		}
 		
+		public static function yToTextLine(engine:ITextEngine, y:Number):TextLine
+		{
+			var a:ITextEngineAnalytics = engine.analytics;
+			var b:TextBlock = a.blockAtPixel(engine.scrollPosition + y);
+			
+			if(!b)
+			{
+				if(y < 0)
+					return a.getBlockAt(0).firstLine;
+				
+				return null;
+			}
+			
+			var l:TextLine = b.firstLine;
+			var lp:LayoutProperties = getLP(b);
+			var h:Number = a.blockPixelStart(b) + lp.paddingTop;
+			
+			while(l)
+			{
+				h += l.ascent;
+				
+				if(h >= y)
+					break;
+				
+				h += l.descent + lp.leading;
+				l = l.nextLine;
+			}
+			
+			if(!l && h <= lp.y + lp.height + lp.paddingBottom)
+				l = b.lastLine;
+			
+			return l;
+		}
+		
 		private static var mac:Boolean = (/mac/i).test(Capabilities.os);
 		
 		/**
@@ -84,6 +132,11 @@ package org.tinytlf.util
 		public static function isMac():Boolean
 		{
 			return mac;
+		}
+		
+		public static function validPoint(p:Point):Boolean
+		{
+			return p.x == p.x && p.y == p.y;
 		}
 		
 		/**
@@ -162,20 +215,20 @@ package org.tinytlf.util
 			if(!!objectA != !!objectB)
 				return false;
 			
-			if(!recursiveCompare(objectA, objectB, exceptions))
-				return false;
-			if(!recursiveCompare(objectB, objectA, exceptions))
-				return false;
-			
-			return true;
+			return (
+				recursiveCompare(objectA, objectB, exceptions) &&
+				recursiveCompare(objectB, objectA, exceptions)
+				);
 		}
 		
-		private static const types:Dictionary = new Dictionary();
+		private static const compareTypes:Dictionary = new Dictionary();
 		
 		private static function recursiveCompare(source:Object, 
 												 dest:Object, 
 												 exceptions:Object = null):Boolean
 		{
+			exceptions ||= {};
+			
 			if(source is Array)
 			{
 				if(source.length != dest.length)
@@ -200,34 +253,33 @@ package org.tinytlf.util
 			}
 			
 			var accessors:XMLList;
-			if(source.constructor in types)
-			{
-				accessors = types[source.constructor];
-			}
-			else
+			if(!(source.constructor in compareTypes))
 			{
 				var xml:XML = describeType(source);
-				types[source.constructor] = accessors = xml..accessor.(@access == 'readwrite');
+				compareTypes[source.constructor] = xml..accessor.(@access == 'readwrite');
 			}
+			
+			accessors = compareTypes[source.constructor];
 			
 			var n:String;
 			for each(var x:XML in accessors)
 			{
 				n = x.@name;
 				
-				if(exceptions && n in exceptions)
+				if(n in exceptions)
 					continue;
 				
 				switch(typeof source[n])
 				{
 					case 'object':
 					case 'xml':
-						if(!recursiveCompare(source[n], dest[n]))
+						if(!recursiveCompare(source[n], dest[n], exceptions))
 							return false;
 						break;
 					case 'boolean':
 					case 'number':
 					case 'string':
+					case 'function':
 						if(source[n] !== dest[n])
 							return false;
 						break;

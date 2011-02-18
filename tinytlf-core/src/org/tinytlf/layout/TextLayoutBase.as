@@ -82,6 +82,7 @@ package org.tinytlf.layout
 			_containers.push(container);
 			container.engine = engine;
 			container.scrollable = true;
+			engine.interactor.getMirror(container);
 		}
 		
 		public function removeContainer(container:ITextContainer):void
@@ -126,7 +127,9 @@ package org.tinytlf.layout
 			
 			textBlockFactory.beginRender();
 			
-			var block:TextBlock = textBlockFactory.nextBlock;
+			var blockIndex:int = engine.analytics.indexAtPixel(engine.scrollPosition);
+			blockIndex = blockIndex <= 0 ? 0 : blockIndex;
+			var block:TextBlock = textBlockFactory.getTextBlock(blockIndex);
 			var container:ITextContainer = containers[0];
 			
 			while(block && container)
@@ -142,7 +145,7 @@ package org.tinytlf.layout
 				// place to render the lines.
 				if(container)
 				{
-					block = textBlockFactory.nextBlock;
+					block = textBlockFactory.getTextBlock(++blockIndex);
 				}
 			}
 			

@@ -26,13 +26,14 @@ package org.tinytlf.analytics
 		function set engine(textEngine:ITextEngine):void;
 		
 		function get cachedBlocks():Dictionary;
+		function get numBlocks():int;
 		function get contentLength():int;
 		function get pixelLength():int;
 		
-		function blockAtIndex(index:int):TextBlock;
-		function cacheBlock(block:TextBlock, index:int):void;
-		function uncacheBlock(index:int):void;
-		function clearBlock(index:int):void;
+		function getBlockAt(index:int):TextBlock;
+		function addBlockAt(block:TextBlock, index:int):void;
+		function removeBlockAt(index:int):void;
+		function getBlockIndex(block:TextBlock):int;
 		
 		function blockAtContent(index:int):TextBlock;
 		function blockContentStart(block:TextBlock):Number;

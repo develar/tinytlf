@@ -8,14 +8,15 @@ package org.tinytlf.layout.factories
 	import org.tinytlf.layout.constraints.ITextConstraint;
 	import org.tinytlf.layout.properties.LayoutProperties;
 	import org.tinytlf.styles.*;
+	import org.tinytlf.util.TinytlfUtil;
 	import org.tinytlf.util.fte.*;
 	
 	public class XMLTextBlockFactory extends TextBlockFactoryBase
 	{
-		override public function get nextBlock():TextBlock
+		override public function getTextBlock(index:int):TextBlock
 		{
-			if(++listIndex < root.*.length())
-				return generateTextBlock(listIndex);
+			if(index < root.*.length())
+				return super.getTextBlock(index);
 			
 			return null;
 		}
@@ -29,7 +30,7 @@ package org.tinytlf.layout.factories
 			var n:int = root.*.length();
 			for(var i:int = listIndex + 1; i < n; i += 1)
 			{
-				analytics.uncacheBlock(i);
+				analytics.removeBlockAt(i);
 			}
 		}
 		
@@ -37,11 +38,11 @@ package org.tinytlf.layout.factories
 		{
 			analytics.clear();
 			
-			for each(var cElement:ContentElement in cachedElements)
-				clearConstraints(cElement);
-			
-			cachedElements.length = 0;
-			cachedLayouts.length = 0;
+//			for each(var cElement:ContentElement in cachedElements)
+//				clearConstraints(cElement);
+//			
+//			cachedElements.length = 0;
+//			cachedLayouts.length = 0;
 		}
 		
 		override public function getElementFactory(element:*):IContentElementFactory
