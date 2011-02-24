@@ -17,5 +17,11 @@
       <artifactId>core</artifactId>
       <type>swc</type>
     </dependency>
+    <dependency>
+      <groupId>org.tinytlf</groupId>
+      <artifactId>as3-gestures</artifactId>
+      <type>swc</type>
+      <version>0.1</version>
+    </dependency>
   </dependencies>
 </project>

@@ -14,19 +14,13 @@
   <dependencies>
     <dependency>
       <groupId>org.tinytlf</groupId>
-      <artifactId>model</artifactId>
+      <artifactId>edit</artifactId>
       <version>1.0.2</version>
       <type>swc</type>
     </dependency>
     <dependency>
       <groupId>org.tinytlf</groupId>
       <artifactId>layouts</artifactId>
-      <version>1.0.2</version>
-      <type>swc</type>
-    </dependency>
-    <dependency>
-      <groupId>org.tinytlf</groupId>
-      <artifactId>gestures</artifactId>
       <version>1.0.2</version>
       <type>swc</type>
     </dependency>
