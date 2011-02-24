@@ -13,6 +13,7 @@ package org.tinytlf
 	import flash.utils.*;
 	
 	import org.tinytlf.analytics.*;
+	import org.tinytlf.conversion.*;
 	import org.tinytlf.decor.*;
 	import org.tinytlf.interaction.*;
 	import org.tinytlf.layout.*;
@@ -44,6 +45,26 @@ package org.tinytlf
 			
 			_analytics = textAnalytics;
 			_analytics.engine = this;
+		}
+		
+		protected var _blockFactory:ITextBlockFactory;
+		
+		public function get blockFactory():ITextBlockFactory
+		{
+			if(!_blockFactory)
+				_blockFactory = new TextBlockFactoryBase();
+			
+			return _blockFactory;
+		}
+		
+		public function set blockFactory(value:ITextBlockFactory):void
+		{
+			if(value === _blockFactory)
+				return;
+			
+			_blockFactory = value;
+			
+			_blockFactory.engine = this;
 		}
 		
 		public function set configuration(engineConfiguration:ITextEngineConfiguration):void
@@ -316,11 +337,12 @@ package org.tinytlf
 		
 		protected function renderLines():void
 		{
+			// If we have selection decorations and are re-rendering the lines,
+			// re-render the decorations so they don't get out of sync.
 			if(selection.x == selection.x && selection.y == selection.y)
-			{
 				invalidateDecorationsFlag = true;
-			}
 			
+			blockFactory.preRender();
 			layout.render();
 		}
 		

@@ -6,11 +6,9 @@
  */
 package org.tinytlf.layout
 {
-	import flash.text.engine.TextBlock;
 	import flash.text.engine.TextLine;
 	
 	import org.tinytlf.ITextEngine;
-	import org.tinytlf.layout.factories.ITextBlockFactory;
 	
 	/**
 	 * ITextLayout is the tinytlf text layout actor. ITextLayout is responsible
@@ -54,13 +52,6 @@ package org.tinytlf.layout
 		 */
 		function get engine():ITextEngine;
 		function set engine(textEngine:ITextEngine):void;
-		
-		/**
-		 * The ILayoutFactoryMap for tinytlf. This object accepts arbitrary data
-		 * and converts it into Flash Text Engine ContentElements and TextBlocks.
-		 */
-		function get textBlockFactory():ITextBlockFactory;
-		function set textBlockFactory(value:ITextBlockFactory):void;
 		
 		/**
 		 * Adds an ITextContainer to be managed and used in layout.
