@@ -146,6 +146,9 @@ package org.tinytlf.layout.orientation.horizontal
 			}
 			
 			target.measuredHeight = measuredHeight;
+      if (target.totalHeight == 0) {
+        target.totalHeight = measuredHeight;
+      }
 			
 			//Don't hold onto these lines, they will be reused later.
 			importantLines.length = 0;
