@@ -105,6 +105,13 @@ package org.tinytlf.layout.orientation.horizontal
 				props.height += lines[i].height + props.leading;
 			}
 		}
+    
+    override public function preLayout():void
+		{
+			super.preLayout();
+			
+			target.totalHeight = 0;
+		}
 		
 		override public function postLayout():void
 		{
