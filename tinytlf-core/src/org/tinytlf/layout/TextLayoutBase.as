@@ -43,23 +43,32 @@ package org.tinytlf.layout
 			}
 		}
 		
-		protected var _containers:Vector.<ITextContainer> = new Vector.<ITextContainer>;
+		protected var _containers:Vector.<ITextContainer>;
 		
 		public function get containers():Vector.<ITextContainer>
 		{
-			return _containers ? _containers.concat() : new Vector.<ITextContainer>;
+			return _containers;
 		}
 		
 		public function addContainer(container:ITextContainer):void
 		{
-			if(containers.indexOf(container) != -1)
-				return;
-			
-			_containers.forEach(function(c:ITextContainer, ...args):void{
-				c.scrollable = false;
-			});
-			
-			_containers.push(container);
+      if (_containers == null) {
+        _containers = new Vector.<ITextContainer>(1, true);
+        _containers[0] = container;
+      }
+      else if (_containers.indexOf(container) != -1) {
+        return;
+      }
+      else {
+        for (var i:int = 0; i < _containers.length; i++) {
+          container[i].scrollable = false;
+        }
+        
+        _containers.fixed = false;
+        _containers[_containers.length] = container;
+        _containers.fixed = true;
+      }
+      
 			container.engine = engine;
 			container.scrollable = true;
 			engine.interactor.getMirror(container);
@@ -71,7 +80,9 @@ package org.tinytlf.layout
 			if(i == -1)
 				return;
 			
+      _containers.fixed = false;
 			_containers.splice(i, 1);
+      _containers.fixed = true;
 			container.engine = null;
 		}
 		
@@ -99,10 +110,11 @@ package org.tinytlf.layout
 		{
 			if(!containers || !containers.length)
 				return;
-			
-			containers.forEach(function(c:ITextContainer, ... args):void{
-				c.preLayout();
-			});
+
+      var container:ITextContainer;
+      for each (container in _containers) {
+        container.preLayout();
+      }
 			
 			var factory:ITextBlockFactory = engine.blockFactory;
 			var analytics:ITextEngineAnalytics = engine.analytics;
@@ -111,7 +123,7 @@ package org.tinytlf.layout
 			blockIndex = blockIndex <= 0 ? 0 : blockIndex;
 			
 			var block:TextBlock = factory.getTextBlock(blockIndex);
-			var container:ITextContainer = containers[0];
+			container = containers[0];
 			
 			beginRender(blockIndex);
 			
@@ -132,9 +144,9 @@ package org.tinytlf.layout
 			
 			endRender(blockIndex);
 			
-			containers.forEach(function(c:ITextContainer, ... args):void{
-				c.postLayout();
-			});
+			for each (container in _containers) {
+        container.postLayout();
+      }
 		}
 		
 		/**
