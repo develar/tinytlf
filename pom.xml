@@ -23,6 +23,7 @@
     <module>tinytlf-xhtml</module>
     <module>tinytlf-decorations</module>
     <module>tinytlf-edit</module>
+    <!--<module>test</module>-->
   </modules>
 
   <developers>

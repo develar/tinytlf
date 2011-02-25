@@ -59,15 +59,17 @@
 	</target>
 
 	<!-- Run Unit Tests -->
-	<target name="test" depends="init" if="run.test">
+	<target name="test" depends="init" >
 		<echo>[test] Running Unit Tests</echo>
 		<!-- Compile TestRunner.mxml as a SWF -->
 
 		<mkdir dir="${report.loc}" />
 
 		<java jar="${FLEX_HOME}/lib/mxmlc.jar" dir="${FLEX_HOME}/frameworks" fork="true" failonerror="true">
-			<arg value="${test.src.loc}/${project.name}TestApp.mxml" />
-			<arg value="-source-path=${main.src.loc}" />
+			<arg value="${test.src.loc}/${project.name}Test.mxml" />
+			<arg value="-source-path=${core.src.loc}" />
+			<arg value="-source-path=${utils.src.loc}" />
+			<arg value="-source-path=${xhtml.src.loc}" />
 
 			<arg value="-output=${bin.loc}/TestRunner.swf" />
 			<arg value="-default-size=148,148" />
