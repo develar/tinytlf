@@ -205,6 +205,11 @@ package org.tinytlf.analytics
 		{
 			contentVector.clear();
 			positionVector.clear();
+
+      for each (var block:TextBlock in indexCache) {
+        TextBlockUtil.checkIn(block);
+      }
+      
 			indexCache.length = 0;
 			blockCache = new Dictionary(false);
 		}
