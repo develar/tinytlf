@@ -7,11 +7,11 @@
 package org.tinytlf.layout
 {
 	import flash.display.*;
-	import flash.text.engine.*;
+import flash.errors.IllegalOperationError;
+import flash.text.engine.*;
 	import flash.utils.Dictionary;
 	
 	import org.tinytlf.ITextEngine;
-	import org.tinytlf.conversion.ITextBlockFactory;
 	
 	public class TextContainerBase implements ITextContainer
 	{
@@ -29,10 +29,41 @@ package org.tinytlf.layout
 		{
 			return null;
 		}
-		
-		protected function createTextLine(block:TextBlock, previousLine:TextLine):TextLine
-		{
-			return null;
+
+    private var c:Dictionary = new Dictionary();
+    
+    protected function doCreateTextLine(block:TextBlock, previousLine:TextLine, width:Number):TextLine {
+      var line:TextLine;
+      var isYoungOrphan:Boolean;
+      if (youngOrphanCount != 0) {
+        line = visibleLines[youngOrphanLinesIndices[--youngOrphanCount]];
+        isYoungOrphan = true;
+      }
+      else if (orphanCount != 0) {
+        line = orphanLines[--orphanCount];
+      }
+
+			if (line != null) {
+				line = block.recreateTextLine(line, previousLine, width, 0.0, true);
+        if (line == null) {
+          c[isYoungOrphan ? visibleLines[youngOrphanLinesIndices[youngOrphanCount]] : orphanLines[orphanCount]] = true;
+          isYoungOrphan ? youngOrphanCount++ : orphanCount++;
+          return null;
+        }
+        else if (line != null && isYoungOrphan) {
+          return line; // young orphan, already added to target and to visibleLines
+        }
+      }
+      else {
+        line = block.createTextLine(previousLine, width, 0.0, true);
+      }
+
+      if (line != null) {
+        visibleLines.push(line);
+        lines.addChild(line);
+      }
+      
+      return line;
 		}
 		
 		protected var _target:Sprite;
@@ -239,8 +270,11 @@ package org.tinytlf.layout
 				engine.invalidate();
 		}
 		
-		protected var orphanLines:Vector.<TextLine> = new <TextLine>[];
-		protected var visibleLines:Vector.<TextLine> = new <TextLine>[];
+		private var orphanLines:Vector.<TextLine> = new <TextLine>[];
+		private var orphanCount:int;
+		private var youngOrphanCount:int;
+		private const youngOrphanLinesIndices:Vector.<int> = new Vector.<int>();
+		private var visibleLines:Vector.<TextLine> = new <TextLine>[];
 		
 		public function hasLine(line:TextLine):Boolean
 		{
@@ -248,47 +282,64 @@ package org.tinytlf.layout
 		}
 		
 		public function preLayout():void
-		{
-			var lines:Vector.<TextLine> = visibleLines.concat();
-			var n:int = lines.length;
-			var l:TextLine;
-			
+		{	
+      var n:int = visibleLines.length;
+      youngOrphanLinesIndices.length = n;
 			// Parse through and look for invalid lines.
 			for(var i:int = 0; i < n; i += 1)
 			{
-				l = lines[i];
-				
-				if(l.validity === TextLineValidity.VALID)
-					continue;
-				
-				orphanLines.unshift(l);
-				removeLineFromTarget(l);
+				var line:TextLine = visibleLines[i];
+				if (line.validity != TextLineValidity.VALID) {
+				  youngOrphanLinesIndices[youngOrphanCount++] = i;
+        }
 			}
 		}
-		
-		public function postLayout():void
-		{
-			var visibleBlocks:Dictionary = engine.analytics.cachedBlocks;
-			var n:int = visibleLines.length;
-			var line:TextLine;
-			
-			for(var i:int = 0; i < n; i += 1)
-			{
-				line = visibleLines[i];
-				if(line.textBlock in visibleBlocks)
-					continue;
-				
-				orphanLines.push(line);
-			}
-			
-			n = orphanLines.length;
-			for(i = 0; i < n; i += 1)
-			{
-				line = orphanLines[i];
-				unregisterLine(line);
-				removeLineFromTarget(line);
-			}
+
+    public function postLayout():void {
+      if (youngOrphanCount == 0) {
+        orphanLines.length = orphanCount;
+        youngOrphanLinesIndices.length = 0;
+        return;
+      }
+      
+      orphanLines.length = orphanCount + youngOrphanCount;
+      var visibleBlocks:Dictionary = engine.analytics.cachedBlocks;
+      while (youngOrphanCount > 0) {
+        var visibleLineIndex:int = youngOrphanLinesIndices[--youngOrphanCount];
+        var line:TextLine = visibleLines[visibleLineIndex];
+        assert(!(line.textBlock in visibleBlocks) || line in c);
+        assert(orphanLines.indexOf(line) == -1);
+        
+        lines.removeChild(line);
+        line.userData = null;
+        orphanLines[orphanCount++] = line;
+				visibleLines.splice(visibleLineIndex, 1);
+      }
+      
+      assert(visibleLines.length == lines.numChildren);
+
+      var invalidCount:int = 0;
+      for each (var textLine:TextLine in visibleLines) {
+        if (!(textLine.textBlock in visibleBlocks)) {
+          invalidCount++;
+        }
+      }
+      
+      assert(invalidCount == 0);
+      
+      for (var i:int = 0, n:int = lines.numChildren; i < n; i++) {
+        assert(TextLine(lines.getChildAt(i)).textBlock in visibleBlocks);
+      }
+      
+      youngOrphanLinesIndices.length = 0;
+      c = new Dictionary();
 		}
+    
+    private function assert(value:Boolean):void {
+      if (!value) {
+        throw new IllegalOperationError("assert failed");
+      }
+    }
 		
 		public function resetShapes():void
 		{
@@ -324,38 +375,11 @@ package org.tinytlf.layout
 		
 		protected function registerLine(line:TextLine):void
 		{
-			if(!hasLine(line))
-				visibleLines.push(line);
-			
-			line.userData = engine;
-			engine.interactor.getMirror(line);
-		}
-		
-		protected function unregisterLine(line:TextLine):void
-		{
-			line.userData = null;
-			
-			var i:int = visibleLines.indexOf(line);
-			if(i != -1)
-				visibleLines.splice(i, 1);
-		}
-		
-		protected function addLineToTarget(line:TextLine, index:int = 0):TextLine
-		{
-			if(lines.contains(line))
-				return line;
-			
-//			index ||= target.numChildren > 1 ? target.numChildren - 1 : 1;
-			
-			return TextLine(lines.addChildAt(line, index));
-		}
-		
-		protected function removeLineFromTarget(line:TextLine):TextLine
-		{
-			if(!lines.contains(line))
-				return line;
-			
-			return TextLine(lines.removeChild(line));
+      line.userData = engine;
+      engine.interactor.getMirror(line);
+
+      var i:int = orphanLines.indexOf(line);
+      assert(i == -1 || i >= orphanCount);
 		}
 		
 		protected function getLineIndexFromTarget(line:TextLine):int
@@ -377,18 +401,5 @@ package org.tinytlf.layout
 			totalHeight = 0;
 			totalWidth = 0;
 		}
-		
-		protected function getRecycledLine(previousLine:TextLine):TextLine
-		{
-			if(orphanLines.length == 0)
-				return null;
-			
-			var line:TextLine = previousLine;
-			
-			while(line === previousLine)
-				line = orphanLines.pop();
-			
-			return line;
-		}
-	}
+}
 }

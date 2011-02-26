@@ -177,13 +177,11 @@ package org.tinytlf.layout
 		{
 			minor.prepForTextBlock(block, previousLine);
 			major.prepForTextBlock(block, previousLine);
-			
+      
 			var line:TextLine = checkLineBreakJustification(block, createTextLine(block, previousLine));
 			
 			while(line)
 			{
-				addLineToTarget(line);
-				
 				registerLine(line);
 				
 				major.position(line);
@@ -203,15 +201,9 @@ package org.tinytlf.layout
 			return null;
 		}
 		
-		override protected function createTextLine(block:TextBlock, previousLine:TextLine):TextLine
+		private function createTextLine(block:TextBlock, previousLine:TextLine):TextLine
 		{
-			var size:Number = major.getLineSize(block, previousLine);
-			
-			var orphan:TextLine = getRecycledLine(previousLine);
-			if(orphan)
-				return block.recreateTextLine(orphan, previousLine, size, 0.0, true);
-			
-			return block.createTextLine(previousLine, size, 0.0, true);
+      return doCreateTextLine(block, previousLine, major.getLineSize(block, previousLine));
 		}
 		
 		override protected function invalidateVisibleLines():void
