@@ -1,16 +1,14 @@
 package org.tinytlf.layout
 {
-	import flash.display.*;
-	import flash.text.engine.*;
-	
-	import org.tinytlf.layout.constraints.*;
-	import org.tinytlf.layout.orientation.*;
-	import org.tinytlf.layout.orientation.horizontal.*;
-	import org.tinytlf.layout.properties.LayoutProperties;
-	import org.tinytlf.util.TinytlfUtil;
-	import org.tinytlf.util.fte.*;
-	
-	public class ConstraintTextContainer extends TextContainerBase implements IConstraintTextContainer
+import flash.display.*;
+import flash.text.engine.*;
+
+import org.tinytlf.layout.constraints.*;
+import org.tinytlf.layout.orientation.*;
+import org.tinytlf.layout.orientation.horizontal.*;
+  import org.tinytlf.util.fte.*;
+
+public class ConstraintTextContainer extends TextContainerBase implements IConstraintTextContainer
 	{
 		public function ConstraintTextContainer(container:Sprite, 
 												explicitWidth:Number = NaN, 
@@ -144,8 +142,6 @@ package org.tinytlf.layout
 		private function checkBlockLines(block:TextBlock):TextLine
 		{
 			var line:TextLine = block.firstLine;
-			var lp:LayoutProperties = TinytlfUtil.getLP(block);
-			
 			minor.prepForTextBlock(block, null);
 			
 			while(line)

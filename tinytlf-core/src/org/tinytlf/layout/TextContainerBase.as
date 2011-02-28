@@ -6,14 +6,12 @@
 */
 package org.tinytlf.layout
 {
-	import flash.display.*;
-import flash.errors.IllegalOperationError;
+import flash.display.*;
 import flash.text.engine.*;
-	import flash.utils.Dictionary;
-	
-	import org.tinytlf.ITextEngine;
-	
-	public class TextContainerBase implements ITextContainer
+
+import org.tinytlf.ITextEngine;
+
+public class TextContainerBase implements ITextContainer
 	{
 		public function TextContainerBase(container:Sprite, 
 										  explicitWidth:Number = NaN, 
@@ -29,8 +27,6 @@ import flash.text.engine.*;
 		{
 			return null;
 		}
-
-    private var c:Dictionary = new Dictionary();
     
     protected function doCreateTextLine(block:TextBlock, previousLine:TextLine, width:Number):TextLine {
       var line:TextLine;
@@ -46,7 +42,6 @@ import flash.text.engine.*;
 			if (line != null) {
 				line = block.recreateTextLine(line, previousLine, width, 0.0, true);
         if (line == null) {
-          c[isYoungOrphan ? visibleLines[youngOrphanLinesIndices[youngOrphanCount]] : orphanLines[orphanCount]] = true;
           isYoungOrphan ? youngOrphanCount++ : orphanCount++;
           return null;
         }
@@ -303,43 +298,17 @@ import flash.text.engine.*;
       }
       
       orphanLines.length = orphanCount + youngOrphanCount;
-      var visibleBlocks:Dictionary = engine.analytics.cachedBlocks;
       while (youngOrphanCount > 0) {
         var visibleLineIndex:int = youngOrphanLinesIndices[--youngOrphanCount];
         var line:TextLine = visibleLines[visibleLineIndex];
-        assert(!(line.textBlock in visibleBlocks) || line in c);
-        assert(orphanLines.indexOf(line) == -1);
-        
         lines.removeChild(line);
         line.userData = null;
         orphanLines[orphanCount++] = line;
 				visibleLines.splice(visibleLineIndex, 1);
       }
       
-      assert(visibleLines.length == lines.numChildren);
-
-      var invalidCount:int = 0;
-      for each (var textLine:TextLine in visibleLines) {
-        if (!(textLine.textBlock in visibleBlocks)) {
-          invalidCount++;
-        }
-      }
-      
-      assert(invalidCount == 0);
-      
-      for (var i:int = 0, n:int = lines.numChildren; i < n; i++) {
-        assert(TextLine(lines.getChildAt(i)).textBlock in visibleBlocks);
-      }
-      
       youngOrphanLinesIndices.length = 0;
-      c = new Dictionary();
 		}
-    
-    private function assert(value:Boolean):void {
-      if (!value) {
-        throw new IllegalOperationError("assert failed");
-      }
-    }
 		
 		public function resetShapes():void
 		{
@@ -377,17 +346,6 @@ import flash.text.engine.*;
 		{
       line.userData = engine;
       engine.interactor.getMirror(line);
-
-      var i:int = orphanLines.indexOf(line);
-      assert(i == -1 || i >= orphanCount);
-		}
-		
-		protected function getLineIndexFromTarget(line:TextLine):int
-		{
-			if(!target.contains(line))
-				return -1;
-			
-			return target.getChildIndex(line);
 		}
 		
 		protected function invalidateVisibleLines():void

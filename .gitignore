@@ -24,6 +24,8 @@ CVS/*
 docs/*
 obj/*
 
+target/*
+
 .fxpProperties
 .actionScriptProperties
 .flexProperties
