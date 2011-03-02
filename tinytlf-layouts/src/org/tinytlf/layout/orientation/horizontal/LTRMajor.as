@@ -104,8 +104,8 @@ package org.tinytlf.layout.orientation.horizontal
 		{
 			super.handleConstraint(line, constraint);
 			
-			if(!constraint.constraintMarker)
-				return;
+//			if(!constraint.constraintMarker)
+//				return;
 			
 			if(constraint.float)
 			{

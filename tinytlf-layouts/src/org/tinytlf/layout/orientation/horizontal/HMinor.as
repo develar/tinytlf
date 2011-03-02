@@ -3,7 +3,8 @@ package org.tinytlf.layout.orientation.horizontal
 	import flash.text.engine.*;
 	
 	import org.tinytlf.layout.IConstraintTextContainer;
-	import org.tinytlf.layout.properties.*;
+import org.tinytlf.layout.constraints.FloatConstraint;
+import org.tinytlf.layout.properties.*;
 	import org.tinytlf.util.TinytlfUtil;
 	import org.tinytlf.util.fte.*;
 	
@@ -51,6 +52,11 @@ package org.tinytlf.layout.orientation.horizontal
 		
 		override public function position(line:TextLine):void
 		{
+      if (line.textBlock.content.userData is FloatConstraint) {
+        line.y = y + line.ascent;
+        return;
+      }
+      
 			var lp:LayoutProperties = TinytlfUtil.getLP(line);
 			var totalWidth:Number = getTotalSize(lp);
 			

@@ -1,8 +1,6 @@
 package org.tinytlf.layout.constraints
 {
-	import flash.text.engine.TextLine;
-
-	/**
+/**
 	 * A text constraint is an element in a TextField which can't have any 
 	 * overlap with other constraints.
 	 * 

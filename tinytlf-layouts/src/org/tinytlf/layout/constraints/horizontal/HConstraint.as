@@ -1,29 +1,30 @@
 package org.tinytlf.layout.constraints.horizontal
 {
-	import flash.text.engine.ContentElement;
-	
-	import org.tinytlf.layout.constraints.TextConstraintBase;
-	import org.tinytlf.layout.properties.TextFloat;
-	
-	/**
+import flash.text.engine.ContentElement;
+import flash.text.engine.TextLine;
+
+import org.tinytlf.layout.constraints.TextConstraintBase;
+import org.tinytlf.layout.properties.TextFloat;
+
+/**
 	 * The base class for a constraint that exists within a horizontal ltr or
 	 * rtl text field.
 	 */
 	public class HConstraint extends TextConstraintBase
 	{
-		public function HConstraint(constraintElement:* = null)
+		public function HConstraint(element:ContentElement, line:TextLine)
 		{
-			super(constraintElement);
+			doInitialize(element, line);
 		}
 		
 		override public function get majorValue():Number
 		{
-			return lp.x;
+			return x;
 		}
 		
 		override public function set majorValue(value:Number):void
 		{
-			lp.x = value;
+			x = value;
 		}
 		
 		override public function get majorSize():Number
@@ -33,15 +34,15 @@ package org.tinytlf.layout.constraints.horizontal
 		
 		override public function set majorSize(value:Number):void
 		{
-			lp.width = value;
+			width = value;
 		}
 		
 		override public function getMajorValue(atMinor:Number, fromMajor:Number):Number
 		{
-			if(atMinor < lp.y)
+			if(atMinor < y)
 				return -1;
 			
-			if(atMinor >= (lp.y + totalHeight))
+			if(atMinor >= (y + totalHeight))
 				return -1;
 			
 			if(float == TextFloat.LEFT)
@@ -58,22 +59,22 @@ package org.tinytlf.layout.constraints.horizontal
 		
 		private function fromLeft(atMinor:Number, fromMajor:Number):Number
 		{
-			if(fromMajor < lp.x)
+			if(fromMajor < x)
 				return fromMajor;
 			
-			if(fromMajor >= lp.x && fromMajor < (lp.x + totalWidth))
-				return (lp.x + totalWidth);
+			if(fromMajor >= x && fromMajor < (x + totalWidth))
+				return (x + totalWidth);
 			
 			return fromMajor;
 		}
 		
 		private function fromRight(atMinor:Number, fromMajor:Number):Number
 		{
-			if(fromMajor < lp.x)
-				return lp.x;
+			if(fromMajor < x)
+				return x;
 			
-			if(fromMajor >= lp.x && fromMajor < (lp.x + totalWidth))
-				return (lp.x - totalWidth);
+			if(fromMajor >= x && fromMajor < (x + totalWidth))
+				return (x - totalWidth);
 			
 			return fromMajor;
 		}

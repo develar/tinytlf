@@ -1,14 +1,13 @@
 package org.tinytlf.layout.orientation
 {
-	import flash.text.engine.*;
-	
-	import org.tinytlf.ITextEngine;
-	import org.tinytlf.layout.IConstraintTextContainer;
-	import org.tinytlf.layout.constraints.ITextConstraint;
-	import org.tinytlf.layout.properties.*;
-	import org.tinytlf.util.fte.TextLineUtil;
-	
-	public class TextFlowOrientationBase implements IMajorOrientation, IMinorOrientation
+import flash.text.engine.*;
+
+import org.tinytlf.ITextEngine;
+import org.tinytlf.layout.IConstraintTextContainer;
+import org.tinytlf.layout.constraints.ITextConstraint;
+import org.tinytlf.util.fte.TextLineUtil;
+
+public class TextFlowOrientationBase implements IMajorOrientation, IMinorOrientation
 	{
 		public function TextFlowOrientationBase(target:IConstraintTextContainer)
 		{
@@ -83,7 +82,6 @@ package org.tinytlf.layout.orientation
 		public function registerConstraint(line:TextLine, atomIndex:int):Boolean
 		{
 			var constraint:ITextConstraint = createConstraint(line, atomIndex);
-			
 			if(!constraint)
 				return false;
 			
@@ -104,12 +102,17 @@ package org.tinytlf.layout.orientation
 		
 		protected function createConstraint(line:TextLine, atomIndex:int):ITextConstraint
 		{
-			var cElement:ContentElement = TextLineUtil.getElementAtAtomIndex(line, atomIndex);
-			var constraint:ITextConstraint = target.getConstraint(cElement);
-			
-			if(!constraint)
+      var element:ContentElement = atomIndex == -1 ? line.textBlock.content : TextLineUtil.getElementAtAtomIndex(line, atomIndex);
+      if (element.userData is ITextConstraint) {
+        target.addConstraint(element.userData);
+        ITextConstraint(element.userData).initialize(line);
+        return element.userData;
+      }
+      
+			var constraint:ITextConstraint = target.getConstraint(element);
+			if (constraint == null)
 			{
-				constraint = target.constraintFactory.getConstraint(line, atomIndex);
+				constraint = target.constraintFactory.getConstraint(element, line, atomIndex);
 				if(constraint)
 				{
 					target.addConstraint(constraint);

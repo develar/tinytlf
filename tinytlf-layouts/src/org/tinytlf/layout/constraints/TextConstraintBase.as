@@ -1,18 +1,26 @@
 package org.tinytlf.layout.constraints
 {
-	import flash.display.DisplayObject;
-	import flash.geom.Rectangle;
-	import flash.text.engine.*;
-	
-	import org.tinytlf.ITextEngine;
-	import org.tinytlf.layout.properties.LayoutProperties;
-	import org.tinytlf.util.fte.ContentElementUtil;
-	
-	/**
+import flash.display.DisplayObject;
+import flash.geom.Rectangle;
+import flash.text.engine.*;
+
+import org.tinytlf.ITextEngine;
+import org.tinytlf.layout.properties.LayoutProperties;
+
+/**
 	 * The base text constraint.
 	 */
 	public class TextConstraintBase implements ITextConstraint
 	{
+    private static var emptyLayoutProperties:LayoutProperties = new LayoutProperties();
+    
+    protected var x:Number;
+    protected var y:Number;
+    protected var width:Number;
+    protected var height:Number;
+    
+    protected var elementLayoutProperties:LayoutProperties;
+    
 		public function TextConstraintBase(constraintElement:* = null)
 		{
 			if(constraintElement)
@@ -20,45 +28,37 @@ package org.tinytlf.layout.constraints
 		}
 		
 		protected var engine:ITextEngine;
-		protected var lp:LayoutProperties;
-		
-		public function initialize(e:*):void
-		{
-			element = e;
-			
-			if(e is ContentElement)
-			{
-				marker = ContentElement(e).userData;
-			}
-			
-			if(e is GraphicElement)
-			{
-				var g:GraphicElement = GraphicElement(e);
-				var dObj:DisplayObject = g.graphic;
-				var line:TextLine = ContentElementUtil.getTextLines(g)[0];
-				engine = ITextEngine(line.userData);
-				
-				lp = new LayoutProperties(g.userData);
-				
-				lp.x = line.x;
-				lp.y = line.y;
-				
-				if(lp.float)
-				{
-					dObj.x = lp.paddingLeft;
-					dObj.y = lp.paddingTop;
-				}
-				else
-				{
-					var bounds:Rectangle = dObj.getBounds(line);
-					
-					lp.x = bounds.x;
-					lp.y = line.y;
-					lp.width = bounds.width || g.elementWidth;
-					lp.height = bounds.height || g.elementHeight;
-				}
-			}
-		}
+
+    public function initialize(e:*):void {
+      element = e;
+    }
+    
+    protected function doInitialize(element:ContentElement, line:TextLine):void {
+      initialize(element);
+      
+      marker = element.userData == null ? line.textBlock.userData : element.userData;
+      engine = ITextEngine(line.userData);
+      elementLayoutProperties = marker is LayoutProperties ? LayoutProperties(marker) : emptyLayoutProperties;
+        
+      x = line.x;
+      y = line.y;
+        
+      if (element is GraphicElement) {
+        var g:GraphicElement = GraphicElement(element);
+        var dObj:DisplayObject = g.graphic;
+        if (elementLayoutProperties.float) {
+          dObj.x = elementLayoutProperties.paddingLeft;
+          dObj.y = elementLayoutProperties.paddingTop;
+        }
+        else {
+          var bounds:Rectangle = dObj.getBounds(line);
+          x = bounds.x;
+          y = line.y;
+          width = bounds.width || g.elementWidth;
+          height = bounds.height || g.elementHeight;
+        }
+      }
+    }
 		
 		private var marker:Object;
 		public function get constraintMarker():Object
@@ -68,7 +68,7 @@ package org.tinytlf.layout.constraints
 		
 		public function get float():String
 		{
-			return lp.float;
+			return elementLayoutProperties.float;
 		}
 		
 		private var element:*;
@@ -102,12 +102,12 @@ package org.tinytlf.layout.constraints
 		
 		protected function get totalWidth():Number
 		{
-			return lp.width + lp.paddingLeft + lp.paddingRight;
+			return elementLayoutProperties.width + elementLayoutProperties.paddingLeft + elementLayoutProperties.paddingRight;
 		}
 		
 		protected function get totalHeight():Number
 		{
-			return lp.height + lp.paddingTop + lp.paddingBottom;
+			return height + elementLayoutProperties.paddingTop + elementLayoutProperties.paddingBottom;
 		}
 	}
 }

@@ -17,12 +17,12 @@ package org.tinytlf.layout.constraints.vertical
 		
 		override public function get majorValue():Number
 		{
-			return lp.y;
+			return y;
 		}
 		
 		override public function set majorValue(value:Number):void
 		{
-			lp.y = value;
+			y = value;
 		}
 		
 		override public function get majorSize():Number
@@ -32,22 +32,22 @@ package org.tinytlf.layout.constraints.vertical
 		
 		override public function set majorSize(value:Number):void
 		{
-			lp.height = value;
+			height = value;
 		}
 		
 		override public function getMajorValue(atMinor:Number, fromMajor:Number):Number
 		{
-			if(atMinor < lp.x)
+			if(atMinor < x)
 				return -1;
 			
-			if(atMinor > (lp.x + totalWidth))
+			if(atMinor > (x + totalWidth))
 				return -1;
 			
-			if(fromMajor < lp.y)
+			if(fromMajor < y)
 				return fromMajor;
 			
-			if(fromMajor >= lp.y && fromMajor < (lp.y + totalHeight))
-				return (lp.y + totalHeight);
+			if(fromMajor >= y && fromMajor < (y + totalHeight))
+				return (y + totalHeight);
 			
 			return fromMajor;
 		}

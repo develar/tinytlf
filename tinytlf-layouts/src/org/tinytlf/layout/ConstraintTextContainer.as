@@ -6,7 +6,8 @@ import flash.text.engine.*;
 import org.tinytlf.layout.constraints.*;
 import org.tinytlf.layout.orientation.*;
 import org.tinytlf.layout.orientation.horizontal.*;
-  import org.tinytlf.util.fte.*;
+import org.tinytlf.layout.properties.LayoutProperties;
+import org.tinytlf.util.fte.*;
 
 public class ConstraintTextContainer extends TextContainerBase implements IConstraintTextContainer
 	{
@@ -15,8 +16,6 @@ public class ConstraintTextContainer extends TextContainerBase implements IConst
 												explicitHeight:Number = NaN)
 		{
 			super(container, explicitWidth, explicitHeight);
-			
-			constraintFactory = new ConstraintFactory();
 			
 			majorDirection = new LTRMajor(this);
 			minorDirection = new HMinor(this);
@@ -61,7 +60,6 @@ public class ConstraintTextContainer extends TextContainerBase implements IConst
 		}
 		
 		private var _constraintFactory:IConstraintFactory;
-		
 		public function set constraintFactory(factory:IConstraintFactory):void
 		{
 			if(factory === _constraintFactory)
@@ -72,6 +70,9 @@ public class ConstraintTextContainer extends TextContainerBase implements IConst
 		
 		public function get constraintFactory():IConstraintFactory
 		{
+      if (_constraintFactory == null) {
+        _constraintFactory = new ConstraintFactory();
+      }
 			return _constraintFactory;
 		}
 		
@@ -101,7 +102,7 @@ public class ConstraintTextContainer extends TextContainerBase implements IConst
 			for(var i:int = 0; i < n; i += 1)
 			{
 				constraint = _constraints[i];
-				if(constraint.content === element)
+				if(constraint.content == element)
 					return constraint;
 			}
 			
@@ -176,7 +177,7 @@ public class ConstraintTextContainer extends TextContainerBase implements IConst
       
 			var line:TextLine = checkLineBreakJustification(block, createTextLine(block, previousLine));
 			
-			while(line)
+			while (line)
 			{
 				registerLine(line);
 				
@@ -211,15 +212,19 @@ public class ConstraintTextContainer extends TextContainerBase implements IConst
 		
 		protected function findConstraints(line:TextLine):void
 		{
-			if(!line.hasGraphicElement)
-				return;
-			
-			var n:int = line.atomCount;
-			for(var i:int = 0; i < n; i += 1)
-				if(line.getAtomGraphic(i))
-					if(major.registerConstraint(line, i))
-						return;
-		}
+      if (line.hasGraphicElement) {
+        var n:int = line.atomCount;
+        for (var i:int = 0; i < n; i++) {
+          if (line.getAtomGraphic(i) && major.registerConstraint(line, i)) {
+            return;
+          }
+        }
+      }
+
+      if (line.textBlock.content.userData is ITextConstraint) {
+        major.registerConstraint(line, -1);
+      }
+    }
 		
 		/**
 		 * @private
@@ -260,15 +265,15 @@ public class ConstraintTextContainer extends TextContainerBase implements IConst
 	}
 }
 
+import flash.text.engine.ContentElement;
 import flash.text.engine.TextLine;
 
 import org.tinytlf.layout.constraints.*;
-import org.tinytlf.util.fte.TextLineUtil;
 
 internal class ConstraintFactory implements IConstraintFactory
 {
-	public function getConstraint(line:TextLine, atomIndex:int):ITextConstraint
+	public function getConstraint(element:ContentElement, line:TextLine, atomIndex:int):ITextConstraint
 	{
-		return new TextConstraintBase(TextLineUtil.getElementAtAtomIndex(line, atomIndex));
+		return new TextConstraintBase(element);
 	}
 }
