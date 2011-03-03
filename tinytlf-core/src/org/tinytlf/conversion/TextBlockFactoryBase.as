@@ -129,7 +129,7 @@ import flash.text.engine.TextBlock;
 
 import org.tinytlf.ITextEngine;
 import org.tinytlf.conversion.*;
-import org.tinytlf.layout.properties.LayoutProperties;
+import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
 import org.tinytlf.util.TinytlfUtil;
 import org.tinytlf.util.fte.TextBlockUtil;
 
@@ -140,7 +140,7 @@ internal class TextBlockGenerator implements ITextBlockGenerator
 		var block:TextBlock = TextBlockUtil.checkOut();
 		block.content = factory.execute(data);
 		
-		var props:LayoutProperties = TinytlfUtil.getLP();
+		var props:StyleAwareLayoutProperties = TinytlfUtil.getLP();
 		props.mergeWith(data);
 		props.applyTo(block);
 		props.model = data;

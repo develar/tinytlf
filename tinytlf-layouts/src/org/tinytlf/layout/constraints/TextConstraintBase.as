@@ -5,21 +5,21 @@ import flash.geom.Rectangle;
 import flash.text.engine.*;
 
 import org.tinytlf.ITextEngine;
-import org.tinytlf.layout.properties.LayoutProperties;
+import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
 
 /**
 	 * The base text constraint.
 	 */
 	public class TextConstraintBase implements ITextConstraint
 	{
-    private static var emptyLayoutProperties:LayoutProperties = new LayoutProperties();
+    private static var emptyLayoutProperties:StyleAwareLayoutProperties = new StyleAwareLayoutProperties();
     
     protected var x:Number;
     protected var y:Number;
     protected var width:Number;
     protected var height:Number;
     
-    protected var elementLayoutProperties:LayoutProperties;
+    protected var elementLayoutProperties:StyleAwareLayoutProperties;
     
 		public function TextConstraintBase(constraintElement:* = null)
 		{
@@ -38,7 +38,7 @@ import org.tinytlf.layout.properties.LayoutProperties;
       
       marker = element.userData == null ? line.textBlock.userData : element.userData;
       engine = ITextEngine(line.userData);
-      elementLayoutProperties = marker is LayoutProperties ? LayoutProperties(marker) : emptyLayoutProperties;
+      elementLayoutProperties = marker is StyleAwareLayoutProperties ? StyleAwareLayoutProperties(marker) : emptyLayoutProperties;
         
       x = line.x;
       y = line.y;

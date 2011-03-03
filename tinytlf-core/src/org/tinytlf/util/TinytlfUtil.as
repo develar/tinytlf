@@ -8,7 +8,7 @@ package org.tinytlf.util
 	
 	import org.tinytlf.ITextEngine;
 	import org.tinytlf.analytics.ITextEngineAnalytics;
-	import org.tinytlf.layout.properties.LayoutProperties;
+	import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
 	import org.tinytlf.util.fte.TextLineUtil;
 	
 	public final class TinytlfUtil
@@ -101,7 +101,7 @@ package org.tinytlf.util
 			}
 			
 			var l:TextLine = b.firstLine;
-			var lp:LayoutProperties = getLP(b);
+			var lp:StyleAwareLayoutProperties = getLP(b);
 			var h:Number = a.blockPixelStart(b) + lp.paddingTop;
 			
 			while(l)
@@ -177,10 +177,10 @@ package org.tinytlf.util
 		 * returned.
 		 * 
 		 */
-		public static function getLP(from:Object = null):LayoutProperties
+		public static function getLP(from:Object = null):StyleAwareLayoutProperties
 		{
-			if(from is LayoutProperties)
-				return LayoutProperties(from);
+			if(from is StyleAwareLayoutProperties)
+				return StyleAwareLayoutProperties(from);
 			
 			var block:TextBlock;
 			if(from is TextLine)
@@ -190,13 +190,13 @@ package org.tinytlf.util
 			
 			if(block)
 			{
-				if(block.userData is LayoutProperties)
-					return LayoutProperties(block.userData);
+				if(block.userData is StyleAwareLayoutProperties)
+					return StyleAwareLayoutProperties(block.userData);
 				else
-					return block.userData = new LayoutProperties();
+					return block.userData = new StyleAwareLayoutProperties();
 			}
 			
-			return new LayoutProperties(from);
+			return new StyleAwareLayoutProperties(from);
 		}
 		
 		/**

@@ -4,7 +4,7 @@ package org.tinytlf.conversion
 	import flash.utils.Dictionary;
 	
 	import org.tinytlf.analytics.ITextEngineAnalytics;
-	import org.tinytlf.layout.properties.LayoutProperties;
+	import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
 	import org.tinytlf.model.*;
 	import org.tinytlf.model.xml.TagSoup;
 	import org.tinytlf.util.*;
@@ -31,7 +31,7 @@ package org.tinytlf.conversion
 			var node:ITLFNode;
 			var element:ContentElement;
 			var block:TextBlock;
-			var lp:LayoutProperties;
+			var lp:StyleAwareLayoutProperties;
 			
 			for(var i:int = 0; i < n; i += 1)
 			{

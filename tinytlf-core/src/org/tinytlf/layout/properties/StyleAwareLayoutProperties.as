@@ -23,9 +23,9 @@ package org.tinytlf.layout.properties
 	 * block level layout values are defined as public members, but feel free to
 	 * tack on properties as you need.
 	 */
-    public dynamic class LayoutProperties extends StyleAwareActor
+    public dynamic class StyleAwareLayoutProperties extends StyleAwareActor
     {
-        public function LayoutProperties(props:Object = null)
+        public function StyleAwareLayoutProperties(props:Object = null)
         {
 			super(props);
         }

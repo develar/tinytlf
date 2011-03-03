@@ -5,7 +5,7 @@ package org.tinytlf.analytics
 	
 	import org.tinytlf.ITextEngine;
 	import org.tinytlf.conversion.ITextBlockFactory;
-	import org.tinytlf.layout.properties.LayoutProperties;
+	import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
 	import org.tinytlf.util.TinytlfUtil;
 	import org.tinytlf.util.fte.TextBlockUtil;
 	

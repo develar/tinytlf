@@ -83,7 +83,7 @@ package org.tinytlf.layout.orientation.horizontal
 		{
 			evaluateConstraints(line);
 			
-			var lp:LayoutProperties = TinytlfUtil.getLP(line);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
 			
 			switch(lp.textAlign)
 			{
@@ -173,7 +173,7 @@ package org.tinytlf.layout.orientation.horizontal
 			leftConstraint = Math.min(l, totalWidth);
 			rightConstraint = Math.max(r, 0);
 			
-			var lp:LayoutProperties = TinytlfUtil.getLP(around);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(around);
 			switch(lp.textAlign)
 			{
 				case TextAlign.LEFT:

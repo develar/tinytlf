@@ -27,7 +27,7 @@ package org.tinytlf.layout.orientation.horizontal
 		
 		override public function getLineSize(block:TextBlock, previousLine:TextLine):Number
 		{
-			var lp:LayoutProperties = TinytlfUtil.getLP(block);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
 			var totalWidth:Number = getTotalSize(block);
 			
 			if(previousLine == null)
@@ -38,7 +38,7 @@ package org.tinytlf.layout.orientation.horizontal
 		
 		override public function position(line:TextLine):void
 		{
-			var props:LayoutProperties = TinytlfUtil.getLP(line);
+			var props:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
 			var totalWidth:Number = getTotalSize(line);
 			
 			var lineWidth:Number = line.width;
@@ -66,7 +66,7 @@ package org.tinytlf.layout.orientation.horizontal
 		
 		override protected function getTotalSize(from:Object = null):Number
 		{
-			var lp:LayoutProperties = TinytlfUtil.getLP(from);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(from);
 			
 			if(lp.width)
 				return lp.width;
@@ -93,7 +93,7 @@ package org.tinytlf.layout.orientation.horizontal
 		{
 			super.postTextBlock(block);
 			
-			var props:LayoutProperties = TinytlfUtil.getLP(block);
+			var props:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
 			var info:TextBlockInfo = new TextBlockInfo(block);
 			
 			if(target.hasLine(block.firstLine))
@@ -126,7 +126,7 @@ package org.tinytlf.layout.orientation.horizontal
 			var blocks:Dictionary = new Dictionary(true);
 			var info:TextBlockInfo;
 			var block:TextBlock;
-			var props:LayoutProperties;
+			var props:StyleAwareLayoutProperties;
 			
 			for(var i:int = 0, n:int = importantLines.length; i < n; i += 1)
 			{
@@ -165,7 +165,7 @@ package org.tinytlf.layout.orientation.horizontal
 
 import flash.text.engine.*;
 
-import org.tinytlf.layout.properties.LayoutProperties;
+import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
 import org.tinytlf.util.TinytlfUtil;
 import org.tinytlf.util.fte.TextBlockUtil;
 
@@ -215,8 +215,8 @@ internal class TextBlockInfo
 		return _rendered;
 	}
 	
-	private var lp:LayoutProperties;
-	public function get props():LayoutProperties
+	private var lp:StyleAwareLayoutProperties;
+	public function get props():StyleAwareLayoutProperties
 	{
 		return lp;
 	}

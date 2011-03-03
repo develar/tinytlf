@@ -6,7 +6,7 @@ import flash.text.engine.*;
 import org.tinytlf.layout.constraints.*;
 import org.tinytlf.layout.orientation.*;
 import org.tinytlf.layout.orientation.horizontal.*;
-import org.tinytlf.layout.properties.LayoutProperties;
+import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
 import org.tinytlf.util.fte.*;
 
 public class ConstraintTextContainer extends TextContainerBase implements IConstraintTextContainer

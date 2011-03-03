@@ -30,7 +30,7 @@ import org.tinytlf.layout.properties.*;
 		
 		override public function prepForTextBlock(block:TextBlock, line:TextLine):void
 		{
-			var lp:LayoutProperties = TinytlfUtil.getLP(block);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
 			
 			if(line)
 			{
@@ -57,7 +57,7 @@ import org.tinytlf.layout.properties.*;
         return;
       }
       
-			var lp:LayoutProperties = TinytlfUtil.getLP(line);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
 			var totalWidth:Number = getTotalSize(lp);
 			
 			switch(lp.textAlign)
@@ -99,7 +99,7 @@ import org.tinytlf.layout.properties.*;
 		
 		private function incrementY(line:TextLine):void
 		{
-			var lp:LayoutProperties = TinytlfUtil.getLP(line);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
 			var block:TextBlock = line.textBlock;
 			
 			y += line.ascent;

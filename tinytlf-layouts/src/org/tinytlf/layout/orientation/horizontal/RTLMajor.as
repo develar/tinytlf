@@ -30,7 +30,7 @@ package org.tinytlf.layout.orientation.horizontal
 		
 		override public function prepForTextBlock(block:TextBlock, line:TextLine):void
 		{
-			var lp:LayoutProperties = TinytlfUtil.getLP(block);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
 			
 			if(line)
 			{
@@ -59,7 +59,7 @@ package org.tinytlf.layout.orientation.horizontal
 		override public function getLineSize(block:TextBlock, previousLine:TextLine):Number
 		{
 			var totalSize:Number = super.getLineSize(block, previousLine);
-			var lp:LayoutProperties = TinytlfUtil.getLP(block);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
 			switch(lp.textAlign)
 			{
 				case TextAlign.LEFT:
@@ -77,7 +77,7 @@ package org.tinytlf.layout.orientation.horizontal
 		override public function position(line:TextLine):void
 		{
 			//position here, don't rely on the sizing method to set the position.
-			var lp:LayoutProperties = TinytlfUtil.getLP(line);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
 			switch(lp.textAlign)
 			{
 				case TextAlign.LEFT:

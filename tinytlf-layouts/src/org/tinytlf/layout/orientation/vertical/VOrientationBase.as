@@ -16,7 +16,7 @@ package org.tinytlf.layout.orientation.vertical
 		
 		override public function getLineSize(block:TextBlock, previousLine:TextLine):Number
 		{
-			var lp:LayoutProperties = TinytlfUtil.getLP(block);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
 			var totalHeight:Number = getTotalSize(block);
 			
 			if(previousLine == null)
@@ -27,7 +27,7 @@ package org.tinytlf.layout.orientation.vertical
 		
 		override public function position(line:TextLine):void
 		{
-			var props:LayoutProperties = TinytlfUtil.getLP(line);
+			var props:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
 			var totalHeight:Number = getTotalSize(line);
 			
 			var lineWidth:Number = line.width;
@@ -55,7 +55,7 @@ package org.tinytlf.layout.orientation.vertical
 		
 		override protected function getTotalSize(from:Object = null):Number
 		{
-			var lp:LayoutProperties = TinytlfUtil.getLP(from);
+			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(from);
 			
 			if(lp.height)
 				return lp.height;

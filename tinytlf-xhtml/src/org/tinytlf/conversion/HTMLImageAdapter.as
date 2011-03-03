@@ -11,7 +11,7 @@ package org.tinytlf.conversion
     import flash.net.URLRequest;
     import flash.text.engine.*;
     
-    import org.tinytlf.layout.properties.LayoutProperties;
+    import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
     import org.tinytlf.model.ITLFNode;
     import org.tinytlf.util.fte.*;
 
@@ -23,7 +23,7 @@ package org.tinytlf.conversion
 			var imageProperties:Object = engine.styler.describeElement(img);
 			var inheritedProperties:Object = engine.styler.describeElement(img.parent);
 			
-			var lp:LayoutProperties = new LayoutProperties(imageProperties);
+			var lp:StyleAwareLayoutProperties = new StyleAwareLayoutProperties(imageProperties);
 			
 			var format:ElementFormat = getElementFormat(context);
 			format.dominantBaseline = TextBaseline.IDEOGRAPHIC_TOP;
@@ -81,13 +81,13 @@ import flash.events.*;
 import flash.geom.Matrix;
 import flash.net.URLRequest;
 
-import org.tinytlf.layout.properties.LayoutProperties;
+import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
 
 internal class ImageLoader extends Sprite
 {
-	private var lp:LayoutProperties;
+	private var lp:StyleAwareLayoutProperties;
 	
-	public function ImageLoader(src:String, lp:LayoutProperties)
+	public function ImageLoader(src:String, lp:StyleAwareLayoutProperties)
 	{
 		this.lp = lp;
 		
