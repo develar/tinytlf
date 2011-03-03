@@ -6,14 +6,12 @@
  */
 package org.tinytlf.conversion
 {
-	import flash.text.engine.*;
-	import flash.utils.Dictionary;
-	
-	import org.tinytlf.*;
-	import org.tinytlf.analytics.*;
-	import org.tinytlf.layout.properties.*;
-	
-	public class TextBlockFactoryBase implements ITextBlockFactory
+import flash.text.engine.*;
+import flash.utils.Dictionary;
+
+import org.tinytlf.*;
+
+public class TextBlockFactoryBase implements ITextBlockFactory
 	{
 		private var _engine:ITextEngine;
 		
@@ -125,12 +123,11 @@ package org.tinytlf.conversion
 		}
 	}
 }
+
 import flash.text.engine.TextBlock;
 
-import org.tinytlf.ITextEngine;
 import org.tinytlf.conversion.*;
 import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
-import org.tinytlf.util.TinytlfUtil;
 import org.tinytlf.util.fte.TextBlockUtil;
 
 internal class TextBlockGenerator implements ITextBlockGenerator
@@ -140,7 +137,8 @@ internal class TextBlockGenerator implements ITextBlockGenerator
 		var block:TextBlock = TextBlockUtil.checkOut();
 		block.content = factory.execute(data);
 		
-		var props:StyleAwareLayoutProperties = TinytlfUtil.getLP();
+		var props:StyleAwareLayoutProperties = new StyleAwareLayoutProperties();
+    block.userData = props;
 		props.mergeWith(data);
 		props.applyTo(block);
 		props.model = data;

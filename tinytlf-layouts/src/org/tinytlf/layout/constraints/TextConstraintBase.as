@@ -47,8 +47,8 @@ import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
         var g:GraphicElement = GraphicElement(element);
         var dObj:DisplayObject = g.graphic;
         if (elementLayoutProperties.float) {
-          dObj.x = elementLayoutProperties.paddingLeft;
-          dObj.y = elementLayoutProperties.paddingTop;
+          dObj.x = elementLayoutProperties.padding.left;
+          dObj.y = elementLayoutProperties.padding.top;
         }
         else {
           var bounds:Rectangle = dObj.getBounds(line);
@@ -107,7 +107,7 @@ import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
 		
 		protected function get totalHeight():Number
 		{
-			return height + elementLayoutProperties.paddingTop + elementLayoutProperties.paddingBottom;
+			return height + elementLayoutProperties.padding.height;
 		}
 	}
 }

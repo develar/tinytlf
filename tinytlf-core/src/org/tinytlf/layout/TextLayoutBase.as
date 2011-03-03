@@ -233,10 +233,8 @@ package org.tinytlf.layout
 		
 		protected function cacheBlock(block:TextBlock, index:int):void
 		{
-			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
-			var size:Number = lp.paddingTop + lp.height + lp.paddingBottom;
-			
-			engine.analytics.addBlockAt(block, index, size);
+			var lp:ILayoutProperties = block.userData;
+			engine.analytics.addBlockAt(block, index, lp.height + lp.padding.height);
 		}
 		
 		protected function endRender(lastIndex:int):void

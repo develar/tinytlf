@@ -1,17 +1,17 @@
 package org.tinytlf.layout.orientation.horizontal
 {
-	import flash.text.engine.TextBlock;
-	import flash.text.engine.TextLine;
-	import flash.text.engine.TextLineValidity;
-	import flash.utils.Dictionary;
-	
-	import org.tinytlf.layout.IConstraintTextContainer;
-	import org.tinytlf.layout.orientation.TextFlowOrientationBase;
-	import org.tinytlf.layout.properties.*;
-	import org.tinytlf.util.TinytlfUtil;
-	import org.tinytlf.util.fte.TextBlockUtil;
-	
-	/**
+import flash.text.engine.TextBlock;
+import flash.text.engine.TextLine;
+import flash.text.engine.TextLineValidity;
+import flash.utils.Dictionary;
+
+import org.tinytlf.layout.IConstraintTextContainer;
+import org.tinytlf.layout.orientation.TextFlowOrientationBase;
+import org.tinytlf.layout.properties.*;
+import org.tinytlf.util.TinytlfUtil;
+import org.tinytlf.util.fte.TextBlockUtil;
+
+/**
 	 * The base class for the IMajorOrientation and IMinorOrientation classes
 	 * for horizontal-based languages. Languages which are left-to-right
 	 * (typically the Romance languages) or right-to-left (Hebrew, Arabic, etc.)
@@ -27,18 +27,18 @@ package org.tinytlf.layout.orientation.horizontal
 		
 		override public function getLineSize(block:TextBlock, previousLine:TextLine):Number
 		{
-			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
+			var lp:ILayoutProperties = TinytlfUtil.getLP(block);
 			var totalWidth:Number = getTotalSize(block);
 			
 			if(previousLine == null)
 				totalWidth -= lp.textIndent;
 			
-			return totalWidth - lp.paddingLeft - lp.paddingRight;
+			return totalWidth - lp.padding.width;
 		}
 		
 		override public function position(line:TextLine):void
 		{
-			var props:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
+			var props:ILayoutProperties = TinytlfUtil.getLP(line);
 			var totalWidth:Number = getTotalSize(line);
 			
 			var lineWidth:Number = line.width;
@@ -51,13 +51,13 @@ package org.tinytlf.layout.orientation.horizontal
 			{
 				case TextAlign.LEFT:
 				case TextAlign.JUSTIFY:
-					x += props.paddingLeft;
+					x += props.padding.left;
 					break;
 				case TextAlign.CENTER:
 					x = (totalWidth - lineWidth) * 0.5;
 					break;
 				case TextAlign.RIGHT:
-					x = totalWidth - lineWidth + props.paddingRight;
+					x = totalWidth - lineWidth + props.padding.right;
 					break;
 			}
 			
@@ -66,15 +66,18 @@ package org.tinytlf.layout.orientation.horizontal
 		
 		override protected function getTotalSize(from:Object = null):Number
 		{
-			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(from);
-			
-			if(lp.width)
-				return lp.width;
-			
-			if(target.explicitWidth != target.explicitWidth)
-				return TextLine.MAX_LINE_WIDTH;
-			
-			return target.explicitWidth;
+      if (from != null) {
+        var lp:ILayoutProperties = TinytlfUtil.getLP(from);
+        if (lp is StyleAwareLayoutProperties) {
+          return StyleAwareLayoutProperties(lp).width;
+        }
+      }
+
+      if (target.explicitWidth != target.explicitWidth) {
+        return TextLine.MAX_LINE_WIDTH;
+      }
+
+      return target.explicitWidth;
 		}
 		
 		private const importantLines:Vector.<TextLine> = new <TextLine>[];
@@ -93,17 +96,15 @@ package org.tinytlf.layout.orientation.horizontal
 		{
 			super.postTextBlock(block);
 			
-			var props:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
-			var info:TextBlockInfo = new TextBlockInfo(block);
-			
-			if(target.hasLine(block.firstLine))
-				props.height = 0;
-			
-			var lines:Vector.<TextLine> = info.lines;
-			for(var i:int = 0, n:int = lines.length; i < n; i += 1)
-			{
-				props.height += lines[i].height + props.leading;
-			}
+			var layoutProperties:ILayoutProperties = block.userData;
+      var h:Number = 0;
+      var line:TextLine = block.firstLine;
+      do {
+        h += line.height + layoutProperties.leading;
+      }
+      while ((line = line.nextLine) != null);
+      
+      layoutProperties.height = h;
 		}
     
     override public function preLayout():void
@@ -124,10 +125,8 @@ package org.tinytlf.layout.orientation.horizontal
 			// A dictionary of blocks, but also stores the number of lines
 			// from each block that exist in this container.
 			var blocks:Dictionary = new Dictionary(true);
-			var info:TextBlockInfo;
 			var block:TextBlock;
-			var props:StyleAwareLayoutProperties;
-			
+			var props:ILayoutProperties;
 			for(var i:int = 0, n:int = importantLines.length; i < n; i += 1)
 			{
 				if(importantLines[i].validity != TextLineValidity.VALID)
@@ -139,15 +138,15 @@ package org.tinytlf.layout.orientation.horizontal
 					continue;
 				
 				blocks[block] = true;
-				
-				info = new TextBlockInfo(block);
-				props = info.props;
-				
-				if(target.hasLine(block.firstLine))
-					measuredHeight += props.paddingTop;
-				
-				if(info.rendered && target.hasLine(block.lastLine))
-					measuredHeight += props.paddingBottom;
+				props = block.userData;
+
+        if (target.hasLine(block.firstLine)) {
+          measuredHeight += props.padding.top;
+        }
+
+        if (!TextBlockUtil.isInvalid(block) && target.hasLine(block.lastLine)) {
+          measuredHeight += props.padding.bottom;
+        }
 				
 				measuredHeight += props.height;
 			}
@@ -160,64 +159,5 @@ package org.tinytlf.layout.orientation.horizontal
 			//Don't hold onto these lines, they will be reused later.
 			importantLines.length = 0;
 		}
-	}
-}
-
-import flash.text.engine.*;
-
-import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
-import org.tinytlf.util.TinytlfUtil;
-import org.tinytlf.util.fte.TextBlockUtil;
-
-internal class TextBlockInfo
-{
-	public function TextBlockInfo(block:TextBlock)
-	{
-		_rendered = !TextBlockUtil.isInvalid(block);
-		lp = TinytlfUtil.getLP(block);
-		
-		var line:TextLine = block.firstLine;
-		while(line)
-		{
-			++allLines;
-			textLines.push(line);
-			line = line.nextLine;
-		}
-	}
-	
-	private const textLines:Vector.<TextLine> = new <TextLine>[];
-	
-	public function get lines():Vector.<TextLine>
-	{
-		return textLines.concat();
-	}
-	
-	private var lineCount:int = 0;
-	public function get numLines():int
-	{
-		return lineCount;
-	}
-	
-	public function set numLines(value:int):void
-	{
-		lineCount = value;
-	}
-	
-	private var allLines:int = 0;
-	public function get totalLines():int
-	{
-		return allLines;
-	}
-	
-	private var _rendered:Boolean = false;
-	public function get rendered():Boolean
-	{
-		return _rendered;
-	}
-	
-	private var lp:StyleAwareLayoutProperties;
-	public function get props():StyleAwareLayoutProperties
-	{
-		return lp;
 	}
 }

@@ -5,7 +5,8 @@ package org.tinytlf.layout.orientation.horizontal
 	import org.tinytlf.layout.IConstraintTextContainer;
 import org.tinytlf.layout.constraints.FloatConstraint;
 import org.tinytlf.layout.properties.*;
-	import org.tinytlf.util.TinytlfUtil;
+import org.tinytlf.layout.properties.ILayoutProperties;
+import org.tinytlf.util.TinytlfUtil;
 	import org.tinytlf.util.fte.*;
 	
 	/**
@@ -30,8 +31,7 @@ import org.tinytlf.layout.properties.*;
 		
 		override public function prepForTextBlock(block:TextBlock, line:TextLine):void
 		{
-			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
-			
+			var lp:ILayoutProperties = TinytlfUtil.getLP(block);
 			if(line)
 			{
 				if(target.hasLine(line))
@@ -41,25 +41,24 @@ import org.tinytlf.layout.properties.*;
 			}
 			else
 			{
-				y += lp.paddingTop;
+				y += lp.padding.top;
 			}
 		}
 		
 		override public function postTextBlock(block:TextBlock):void
 		{
-			y += TinytlfUtil.getLP(block).paddingBottom;
+			y += ILayoutProperties(block.userData).padding.bottom;
 		}
 		
 		override public function position(line:TextLine):void
 		{
-      if (line.textBlock.content.userData is FloatConstraint) {
+      var lp:ILayoutProperties = line.textBlock.userData;
+      if (lp.constraint != null) {
         line.y = y + line.ascent;
         return;
       }
       
-			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
 			var totalWidth:Number = getTotalSize(lp);
-			
 			switch(lp.textAlign)
 			{
 				case TextAlign.LEFT:
@@ -96,16 +95,12 @@ import org.tinytlf.layout.properties.*;
 		private function positionRight(line:TextLine, totalWidth:Number):void
 		{
 		}
-		
-		private function incrementY(line:TextLine):void
-		{
-			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
-			var block:TextBlock = line.textBlock;
-			
-			y += line.ascent;
-			line.y = y;
-			y += line.descent + lp.leading;
-		}
+
+    private function incrementY(line:TextLine):void {
+      y += line.ascent;
+      line.y = y;
+      y += line.descent + ILayoutProperties(line.textBlock.userData).leading;
+    }
 		
 		override public function checkTargetBounds(line:TextLine):Boolean
 		{

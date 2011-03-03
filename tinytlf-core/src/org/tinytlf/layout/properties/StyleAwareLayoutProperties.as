@@ -7,8 +7,10 @@
 package org.tinytlf.layout.properties
 {
     import flash.text.engine.*;
-	
-    import org.tinytlf.styles.StyleAwareActor;
+
+import org.tinytlf.layout.constraints.ITextConstraint;
+
+import org.tinytlf.styles.StyleAwareActor;
     
 	/**
 	 * This class is essentially a struct which stores values that describe the
@@ -23,32 +25,37 @@ package org.tinytlf.layout.properties
 	 * block level layout values are defined as public members, but feel free to
 	 * tack on properties as you need.
 	 */
-    public dynamic class StyleAwareLayoutProperties extends StyleAwareActor
+    public dynamic class StyleAwareLayoutProperties extends StyleAwareActor implements ILayoutProperties
     {
         public function StyleAwareLayoutProperties(props:Object = null)
         {
 			super(props);
         }
-        
-        public var x:Number = 0;
-        public var y:Number = 0;
-		
-        public var width:Number = 0;
-        public var height:Number = 0;
-        public var leading:Number = 0;
-        public var textIndent:Number = 0;
-        public var paddingLeft:Number = 0;
-        public var paddingRight:Number = 0;
-        public var paddingBottom:Number = 0;
-        public var paddingTop:Number = 0;
-        
-        public var textAlign:String = TextAlign.LEFT;
-        public var textDirection:String = TextDirection.LTR;
-        public var textTransform:String = TextTransform.NONE;
-        public var float:String;
-		public var display:String = TextDisplay.INLINE;
-		public var letterSpacing:Boolean = false;
-		public var locale:String = 'en';
+
+    public var x:Number = 0;
+    public var y:Number = 0;
+
+    public var width:Number = 0;
+    public var _height:Number = 0;
+    public var _leading:Number = 0;
+    public var _textIndent:Number = 0;
+
+    public var _textAlign:String = TextAlign.LEFT;
+    public var textDirection:String = TextDirection.LTR;
+    public var textTransform:String = TextTransform.NONE;
+    public var float:String;
+    
+    public var display:String = TextDisplay.INLINE;
+    public var letterSpacing:Boolean = false;
+    public var locale:String = 'en';
+    
+    public function get textIndent():Number {
+      return _textIndent;
+    }
+    
+    public function get textAlign():String {
+      return _textAlign;
+    }
 		
 		override protected function applyProperty(property:String, destination:Object):void
 		{
@@ -83,6 +90,30 @@ package org.tinytlf.layout.properties
 				block.textJustifier = justifier;
 			}
 		}
+
+    private var _padding:Insets = new Insets();
+    public function get padding():Insets {
+      return null;
     }
+
+    public function set height(value:Number):void {
+      _height = value;
+    }
+
+    public function get leading():Number {
+      return _leading;
+    }
+
+    public function get height():Number {
+      return _height;
+    }
+
+    public function get constraint():ITextConstraint {
+      return null;
+    }
+
+    public function set constraint(value:ITextConstraint):void {
+    }
+  }
 }
 

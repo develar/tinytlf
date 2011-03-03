@@ -1,13 +1,13 @@
 package org.tinytlf.layout.orientation.vertical
 {
-	import flash.text.engine.*;
-	
-	import org.tinytlf.layout.IConstraintTextContainer;
-	import org.tinytlf.layout.properties.*;
-	import org.tinytlf.util.TinytlfUtil;
-	import org.tinytlf.layout.orientation.TextFlowOrientationBase;
-	
-	public class VOrientationBase extends TextFlowOrientationBase
+import flash.text.engine.*;
+
+import org.tinytlf.layout.IConstraintTextContainer;
+import org.tinytlf.layout.orientation.TextFlowOrientationBase;
+import org.tinytlf.layout.properties.*;
+import org.tinytlf.util.TinytlfUtil;
+
+public class VOrientationBase extends TextFlowOrientationBase
 	{
 		public function VOrientationBase(target:IConstraintTextContainer)
 		{
@@ -16,18 +16,18 @@ package org.tinytlf.layout.orientation.vertical
 		
 		override public function getLineSize(block:TextBlock, previousLine:TextLine):Number
 		{
-			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(block);
+			var lp:ILayoutProperties = TinytlfUtil.getLP(block);
 			var totalHeight:Number = getTotalSize(block);
 			
 			if(previousLine == null)
 				totalHeight -= lp.textIndent;
 			
-			return totalHeight - lp.paddingTop - lp.paddingBottom;
+			return totalHeight - lp.padding.height;
 		}
 		
 		override public function position(line:TextLine):void
 		{
-			var props:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
+			var props:ILayoutProperties = TinytlfUtil.getLP(line);
 			var totalHeight:Number = getTotalSize(line);
 			
 			var lineWidth:Number = line.width;
@@ -40,13 +40,13 @@ package org.tinytlf.layout.orientation.vertical
 			{
 				case TextAlign.LEFT:
 				case TextAlign.JUSTIFY:
-					y += props.paddingLeft;
+					y += props.padding.left;
 					break;
 				case TextAlign.CENTER:
 					y = (totalHeight - lineWidth) * 0.5;
 					break;
 				case TextAlign.RIGHT:
-					y = totalHeight - lineWidth + props.paddingRight;
+					y = totalHeight - lineWidth + props.padding.right;
 					break;
 			}
 			
@@ -55,8 +55,7 @@ package org.tinytlf.layout.orientation.vertical
 		
 		override protected function getTotalSize(from:Object = null):Number
 		{
-			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(from);
-			
+			var lp:ILayoutProperties = TinytlfUtil.getLP(from);
 			if(lp.height)
 				return lp.height;
 			

@@ -58,8 +58,8 @@ package org.tinytlf.conversion
 			
             element = new GraphicElement(
 				new ImageLoader(img['src'], lp), 
-				lp.width + lp.paddingLeft + lp.paddingRight, 
-				lp.height + lp.paddingTop + lp.paddingBottom, 
+				lp.width + lp.padding.width, 
+				lp.height + lp.padding.height, 
 				format, getEventMirror(img) || new EventDispatcher());
 			
             element.userData = img;

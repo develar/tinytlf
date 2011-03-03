@@ -83,9 +83,7 @@ package org.tinytlf.layout.orientation.horizontal
 		{
 			evaluateConstraints(line);
 			
-			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(line);
-			
-			switch(lp.textAlign)
+			switch(ILayoutProperties(line.textBlock.userData).textAlign)
 			{
 				case TextAlign.LEFT:
 				case TextAlign.JUSTIFY:
@@ -173,8 +171,7 @@ package org.tinytlf.layout.orientation.horizontal
 			leftConstraint = Math.min(l, totalWidth);
 			rightConstraint = Math.max(r, 0);
 			
-			var lp:StyleAwareLayoutProperties = TinytlfUtil.getLP(around);
-			switch(lp.textAlign)
+			switch(TinytlfUtil.getLP(around).textAlign)
 			{
 				case TextAlign.LEFT:
 				case TextAlign.JUSTIFY:

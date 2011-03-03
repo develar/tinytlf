@@ -5,6 +5,7 @@ import flash.text.engine.*;
 import org.tinytlf.ITextEngine;
 import org.tinytlf.layout.IConstraintTextContainer;
 import org.tinytlf.layout.constraints.ITextConstraint;
+import org.tinytlf.layout.properties.ILayoutProperties;
 import org.tinytlf.util.fte.TextLineUtil;
 
 public class TextFlowOrientationBase implements IMajorOrientation, IMinorOrientation
@@ -86,7 +87,6 @@ public class TextFlowOrientationBase implements IMajorOrientation, IMinorOrienta
 				return false;
 			
 			handleConstraint(line, constraint);
-			
 			return finalizeConstraint(line, constraint);
 		}
 		
@@ -102,14 +102,16 @@ public class TextFlowOrientationBase implements IMajorOrientation, IMinorOrienta
 		
 		protected function createConstraint(line:TextLine, atomIndex:int):ITextConstraint
 		{
-      var element:ContentElement = atomIndex == -1 ? line.textBlock.content : TextLineUtil.getElementAtAtomIndex(line, atomIndex);
-      if (element.userData is ITextConstraint) {
-        target.addConstraint(element.userData);
-        ITextConstraint(element.userData).initialize(line);
-        return element.userData;
+      var constraint:ITextConstraint;
+      if (atomIndex == -1) {
+        constraint = ILayoutProperties(line.textBlock.userData).constraint;
+        target.addConstraint(constraint);
+        constraint.initialize(line);
+        return constraint;
       }
       
-			var constraint:ITextConstraint = target.getConstraint(element);
+      var element:ContentElement = atomIndex == -1 ? line.textBlock.content : TextLineUtil.getElementAtAtomIndex(line, atomIndex);      
+			constraint = target.getConstraint(element);
 			if (constraint == null)
 			{
 				constraint = target.constraintFactory.getConstraint(element, line, atomIndex);

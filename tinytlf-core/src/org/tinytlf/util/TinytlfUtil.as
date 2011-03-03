@@ -8,7 +8,9 @@ package org.tinytlf.util
 	
 	import org.tinytlf.ITextEngine;
 	import org.tinytlf.analytics.ITextEngineAnalytics;
-	import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
+import org.tinytlf.layout.properties.ILayoutProperties;
+import org.tinytlf.layout.properties.LayoutProperties;
+import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
 	import org.tinytlf.util.fte.TextLineUtil;
 	
 	public final class TinytlfUtil
@@ -101,8 +103,8 @@ package org.tinytlf.util
 			}
 			
 			var l:TextLine = b.firstLine;
-			var lp:StyleAwareLayoutProperties = getLP(b);
-			var h:Number = a.blockPixelStart(b) + lp.paddingTop;
+			var lp:ILayoutProperties = b.userData;
+			var h:Number = a.blockPixelStart(b) + lp.padding.top;
 			
 			while(l)
 			{
@@ -115,7 +117,8 @@ package org.tinytlf.util
 				l = l.nextLine;
 			}
 			
-			if(!l && h <= lp.y + lp.height + lp.paddingBottom)
+//			if (!l && h <= lp.y + lp.height + lp.padding.bottom)
+			if (!l && h <= 0 + lp.height + lp.padding.bottom)
 				l = b.lastLine;
 			
 			return l;
@@ -177,10 +180,10 @@ package org.tinytlf.util
 		 * returned.
 		 * 
 		 */
-		public static function getLP(from:Object = null):StyleAwareLayoutProperties
+		public static function getLP(from:Object = null):ILayoutProperties
 		{
-			if(from is StyleAwareLayoutProperties)
-				return StyleAwareLayoutProperties(from);
+			if(from is ILayoutProperties)
+				return ILayoutProperties(from);
 			
 			var block:TextBlock;
 			if(from is TextLine)
@@ -190,10 +193,10 @@ package org.tinytlf.util
 			
 			if(block)
 			{
-				if(block.userData is StyleAwareLayoutProperties)
-					return StyleAwareLayoutProperties(block.userData);
+				if(block.userData is ILayoutProperties)
+					return ILayoutProperties(block.userData);
 				else
-					return block.userData = new StyleAwareLayoutProperties();
+					return block.userData = new LayoutProperties();
 			}
 			
 			return new StyleAwareLayoutProperties(from);

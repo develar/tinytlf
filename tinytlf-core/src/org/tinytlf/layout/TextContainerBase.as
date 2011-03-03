@@ -273,7 +273,7 @@ public class TextContainerBase implements ITextContainer
 		
 		public function hasLine(line:TextLine):Boolean
 		{
-			return visibleLines.indexOf(line) != -1;
+			return line.parent == lines;
 		}
 		
 		public function preLayout():void

@@ -1,16 +1,14 @@
 package org.tinytlf.conversion
 {
-	import flash.text.engine.*;
-	import flash.utils.Dictionary;
-	
-	import org.tinytlf.analytics.ITextEngineAnalytics;
-	import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
-	import org.tinytlf.model.*;
-	import org.tinytlf.model.xml.TagSoup;
-	import org.tinytlf.util.*;
-	import org.tinytlf.util.fte.TextBlockUtil;
-	
-	/**
+import flash.text.engine.*;
+
+import org.tinytlf.analytics.ITextEngineAnalytics;
+import org.tinytlf.layout.properties.StyleAwareLayoutProperties;
+import org.tinytlf.model.*;
+import org.tinytlf.model.xml.TagSoup;
+import org.tinytlf.util.*;
+
+/**
 	 * EditableBlockFactory keeps track of TextBlocks with an eye towards an on
 	 * the editable model.
 	 */
@@ -36,7 +34,7 @@ package org.tinytlf.conversion
 			for(var i:int = 0; i < n; i += 1)
 			{
 				block = a.getBlockAt(i);
-				lp = TinytlfUtil.getLP(block);
+				lp = block.userData;
 				
 				if(i >= root.numChildren)
 				{
@@ -76,7 +74,7 @@ package org.tinytlf.conversion
 			if(!block)
 				block = textBlockGenerator.generate(node, getElementFactory(node.name));
 			
-			TinytlfUtil.getLP(block).model = node;
+      StyleAwareLayoutProperties(block.userData).model = node;
 			
 			return block;
 		}
