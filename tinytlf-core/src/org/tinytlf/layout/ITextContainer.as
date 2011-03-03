@@ -37,16 +37,9 @@ package org.tinytlf.layout
 	 * @see org.tinytlf.layout.ITextLayout
 	 */
     public interface ITextContainer
-    {
-		/**
-		 * Reference to the central <code>ITextEngine</code> facade for this
-		 * <code>container</code>.
-		 * 
-		 * @see org.tinytlf.ITextEngine
-		 */
-        function get engine():ITextEngine;
-        function set engine(textEngine:ITextEngine):void;
-        
+    {   
+    function get engine():ITextEngine;
+    function set engine(textEngine:ITextEngine):void;
 		/**
 		 * The target <code>DisplayObjectContainer</code> for this 
 		 * <code>ITextContainer</code>. <code>TextLines</code> are added to and 

@@ -41,7 +41,7 @@ public class FloatConstraint implements ITextConstraint {
   }
 
   public function getMajorValue(atMinor:Number, fromMajor:Number):Number {
-    if (atMinor < line.y || atMinor >= (line.y + line.height)) {
+    if (atMinor < line.y || atMinor >= (line.y + line.descent)) {
       return -1;
     }
     else {

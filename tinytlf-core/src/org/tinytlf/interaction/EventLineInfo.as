@@ -12,72 +12,59 @@ package org.tinytlf.interaction
     
     import org.tinytlf.ITextEngine;
     import org.tinytlf.analytics.ITextEngineAnalytics;
-    import org.tinytlf.layout.ITextContainer;
+import org.tinytlf.layout.EngineProvider;
+import org.tinytlf.layout.ITextContainer;
     import org.tinytlf.util.TinytlfUtil;
     import org.tinytlf.util.fte.TextLineUtil;
 
     public class EventLineInfo
     {
-        public static function getInfo(event:Event, eventMirror:EventDispatcher = null):EventLineInfo
-        {
-			var container:ITextContainer = event.target as ITextContainer || event.currentTarget as ITextContainer;
-            var line:TextLine;
-			
-			if(container)
-			{
-				var e:ITextEngine = container.engine;
-				
-				if(event is MouseEvent)
-					line = TinytlfUtil.yToTextLine(e, MouseEvent(event).localY);
-				else
-					line = TinytlfUtil.globalIndexToTextLine(e, e.caretIndex);
-			}
-			
-            if(line == null)
-                return null;
-            
-			//If the line validity isn't VALID, these calls will throw errors, 
-			//so return null.
-            if(line.validity == TextLineValidity.INVALID)
-                return null;
-            
-			var block:TextBlock = line.textBlock;
-            var engine:ITextEngine = ITextEngine(line.userData);
-			var atomIndex:int = 0;
-			
-            if(event is MouseEvent)
-			{
-				var m:MouseEvent = event as MouseEvent;
-				atomIndex = TextLineUtil.getAtomIndexAtPoint(line, new Point(m.stageX, m.stageY));
-			}
-			else if(engine.caretIndex)
-			{
-				var analytics:ITextEngineAnalytics = engine.analytics;
-				atomIndex = engine.caretIndex - analytics.blockContentStart(block) - line.textBlockBeginIndex;
-			}
-			
-			var element:ContentElement = TextLineUtil.getElementAtAtomIndex(line, atomIndex);
-            var mirrorRegion:TextLineMirrorRegion;
-			if(line.mirrorRegions)
-			{
-				if(eventMirror)
-				{
-					mirrorRegion = line.getMirrorRegion(eventMirror);
-					element = mirrorRegion.element;
-				}
-				else
-				{
-					mirrorRegion = TextLineUtil.getMirrorRegionForElement(line, element);
-				}
-			}
-			
-            return new EventLineInfo(
-                line, 
-                engine, 
-                mirrorRegion,
-				element
-			);
+      public static function getInfo(event:Event, eventMirror:EventDispatcher = null):EventLineInfo {
+        var container:EngineProvider = event.currentTarget as EngineProvider;
+        if (container == null) {
+          return null;
         }
+
+        var line:TextLine;
+        var engine:ITextEngine = container.engine;
+        var mouseEvent:MouseEvent = event as MouseEvent;
+        if (mouseEvent != null) {
+          line = TinytlfUtil.yToTextLine(engine, mouseEvent.localY);
+        }
+        else {
+          line = TinytlfUtil.globalIndexToTextLine(engine, engine.caretIndex);
+        }
+
+        // If the line validity isn't VALID, these calls will throw errors, 
+        // so return null.
+        if (line == null || line.validity == TextLineValidity.INVALID) {
+          return null;
+        }
+
+        var block:TextBlock = line.textBlock;
+        var atomIndex:int = 0;
+        if (mouseEvent != null) {
+          atomIndex = TextLineUtil.getAtomIndexAtPoint(line, new Point(mouseEvent.stageX, mouseEvent.stageY));
+        }
+        else if (engine.caretIndex) {
+          var analytics:ITextEngineAnalytics = engine.analytics;
+          atomIndex = engine.caretIndex - analytics.blockContentStart(block) - line.textBlockBeginIndex;
+        }
+
+        var element:ContentElement = TextLineUtil.getElementAtAtomIndex(line, atomIndex);
+        var mirrorRegion:TextLineMirrorRegion;
+        if (line.mirrorRegions) {
+          if (eventMirror) {
+            mirrorRegion = line.getMirrorRegion(eventMirror);
+            element = mirrorRegion.element;
+          }
+          else {
+            mirrorRegion = TextLineUtil.getMirrorRegionForElement(line, element);
+          }
+        }
+
+        return new EventLineInfo(line, engine, mirrorRegion, element);
+      }
         
         public function EventLineInfo(line:TextLine, engine:ITextEngine, 
 									  mirrorRegion:TextLineMirrorRegion, element:ContentElement)

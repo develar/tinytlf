@@ -18,7 +18,7 @@ package org.tinytlf.components
 	 * layouts without also having to manage and update an external
 	 * ITextContainer.
 	 */
-	public class TextColumnContainer extends Sprite implements IConstraintTextContainer
+	public class TextColumnContainer extends Sprite implements IConstraintTextContainer, EngineProvider
 	{
 		public function TextColumnContainer()
 		{

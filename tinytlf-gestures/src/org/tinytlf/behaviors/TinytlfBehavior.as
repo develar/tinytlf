@@ -23,7 +23,6 @@ package org.tinytlf.behaviors
 			finalEvent = events[events.length - 1];
 			
 			const info:EventLineInfo = EventLineInfo.getInfo(finalEvent);
-			
 			if(!info)
 				return;
 			

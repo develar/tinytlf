@@ -6,6 +6,7 @@ import flash.text.engine.TextLineValidity;
 import flash.utils.Dictionary;
 
 import org.tinytlf.layout.IConstraintTextContainer;
+import org.tinytlf.layout.constraints.FloatConstraint;
 import org.tinytlf.layout.orientation.TextFlowOrientationBase;
 import org.tinytlf.layout.properties.*;
 import org.tinytlf.util.TinytlfUtil;
@@ -86,8 +87,10 @@ import org.tinytlf.util.fte.TextBlockUtil;
 		{
 			if(super.checkTargetBounds(latestLine))
 				return true;
-			
-			importantLines.push(latestLine);
+
+      if (!(ILayoutProperties(latestLine.textBlock.userData).constraint is FloatConstraint)) {
+        importantLines.push(latestLine);
+      }
 			
 			return false;
 		}
