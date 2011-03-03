@@ -6,19 +6,22 @@
  */
 package org.tinytlf.interaction
 {
-    import flash.events.*;
-    import flash.geom.Point;
-    import flash.text.engine.*;
-    
-    import org.tinytlf.ITextEngine;
-    import org.tinytlf.analytics.ITextEngineAnalytics;
+import flash.display.Sprite;
+import flash.events.*;
+import flash.geom.Point;
+import flash.text.engine.*;
+
+import org.tinytlf.ITextEngine;
+import org.tinytlf.analytics.ITextEngineAnalytics;
 import org.tinytlf.layout.EngineProvider;
 import org.tinytlf.layout.ITextContainer;
-    import org.tinytlf.util.TinytlfUtil;
-    import org.tinytlf.util.fte.TextLineUtil;
+import org.tinytlf.util.TinytlfUtil;
+import org.tinytlf.util.fte.TextLineUtil;
 
     public class EventLineInfo
     {
+      private static const sharedPoint:Point = new Point();
+      
       public static function getInfo(event:Event, eventMirror:EventDispatcher = null):EventLineInfo {
         var container:EngineProvider = event.currentTarget as EngineProvider;
         if (container == null) {
@@ -29,7 +32,15 @@ import org.tinytlf.layout.ITextContainer;
         var engine:ITextEngine = container.engine;
         var mouseEvent:MouseEvent = event as MouseEvent;
         if (mouseEvent != null) {
-          line = TinytlfUtil.yToTextLine(engine, mouseEvent.localY);
+          // TinyTLF doesn't support float text block. It is dirty hack (my time is limited).
+          sharedPoint.x = mouseEvent.localX;
+          sharedPoint.y = mouseEvent.localY;
+          var objects:Array = Sprite(container).getObjectsUnderPoint(sharedPoint);
+          for (var i:int = 0, n:int = objects.length; i < n; i++) {
+            if ((line = objects[i] as TextLine) != null) {
+              break;
+            }
+          }
         }
         else {
           line = TinytlfUtil.globalIndexToTextLine(engine, engine.caretIndex);
@@ -44,7 +55,9 @@ import org.tinytlf.layout.ITextContainer;
         var block:TextBlock = line.textBlock;
         var atomIndex:int = 0;
         if (mouseEvent != null) {
-          atomIndex = TextLineUtil.getAtomIndexAtPoint(line, new Point(mouseEvent.stageX, mouseEvent.stageY));
+          sharedPoint.x = mouseEvent.stageX;
+          sharedPoint.y = mouseEvent.stageY;
+          atomIndex = TextLineUtil.getAtomIndexAtPoint(line, sharedPoint);
         }
         else if (engine.caretIndex) {
           var analytics:ITextEngineAnalytics = engine.analytics;
