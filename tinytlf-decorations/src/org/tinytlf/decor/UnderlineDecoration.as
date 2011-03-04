@@ -6,15 +6,13 @@
  */
 package org.tinytlf.decor
 {
-    import flash.display.Graphics;
-    import flash.display.Sprite;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    import flash.text.engine.ContentElement;
-    import flash.text.engine.FontMetrics;
-    import flash.text.engine.TextLineMirrorRegion;
-    
-    public class UnderlineDecoration extends ContentElementDecoration
+import flash.display.Graphics;
+import flash.display.Sprite;
+import flash.geom.Rectangle;
+import flash.text.engine.ContentElement;
+import flash.text.engine.TextLineMirrorRegion;
+
+public class UnderlineDecoration extends ContentElementDecoration
     {
 		public function UnderlineDecoration(styleObject:Object = null)
 		{
@@ -24,8 +22,7 @@ package org.tinytlf.decor
 		override protected function processContentElement(element:ContentElement):void
 		{
 			super.processContentElement(element);
-			var metrics:FontMetrics = element.elementFormat.getFontMetrics();
-			setStyle("underlineThickness", metrics.underlineThickness);
+			setStyle("underlineThickness", element.elementFormat.getFontMetrics.underlineThickness);
 		}
 		
 		override protected function processTLMR(tlmr:TextLineMirrorRegion):Rectangle
@@ -36,47 +33,40 @@ package org.tinytlf.decor
 			rect.offset(tlmr.textLine.x, tlmr.textLine.y);
 			return rect;
 		}
-		
-        override public function draw(bounds:Vector.<Rectangle>):void
-        {
-            super.draw(bounds);
-            
-            var start:Point;
-            var end:Point;
-            var rect:Rectangle;
-            var g:Graphics;
-            var copy:Vector.<Rectangle> = bounds.concat();
-			var thickness:Number = getStyle("underlineThickness") || 2;
-			var layer:Sprite;
-            
-            while(copy.length > 0)
-            {
-                rect = copy.pop();
-				
-				layer = rectToLayer(rect);
-				if(!layer)
-					continue;
-				
-				g = layer.graphics;
-                start = new Point(rect.left, rect.bottom - thickness);
-                end = new Point(rect.right, rect.bottom - thickness);
-                
-                g.lineStyle(
-					thickness,
-                    getStyle("underlineColor") || getStyle("color") || 0x00,
-                    getStyle("underlineAlpha") || getStyle("alpha") || 1,
-                    getStyle("pixelHinting") || false,
-                    getStyle("scaleMode") || "normal",
-                    getStyle("caps") || null,
-                    getStyle("joints") || null,
-                    getStyle("miterLimit") || 3);
-                
-                g.moveTo(start.x, start.y);
-                g.lineTo(end.x, end.y);
-				g.endFill();
-	            g.lineStyle();
-            }
+
+      override public function draw(bounds:Vector.<Rectangle>):void {
+        super.draw(bounds);
+
+        var rect:Rectangle;
+        var g:Graphics;
+        var thickness:Number = getStyle("underlineThickness") || 2;
+        var layer:Sprite;
+
+        for (var i:int = bounds.length - 1; i > -1; i--) {
+          rect = bounds[i];
+          layer = rectToLayer(rect);
+          if (!layer) {
+            continue;
+          }
+
+          g = layer.graphics;
+
+          g.lineStyle(
+                  thickness,
+                  getStyle("underlineColor") || getStyle("color") || 0x00,
+                  getStyle("underlineAlpha") || getStyle("alpha") || 1,
+                  getStyle("pixelHinting") || false,
+                  getStyle("scaleMode") || "normal",
+                  getStyle("caps") || null,
+                  getStyle("joints") || null,
+                  getStyle("miterLimit") || 3);
+
+          g.moveTo(rect.left, rect.bottom - thickness);
+          g.lineTo(rect.right, rect.bottom - thickness);
+          g.endFill();
+          g.lineStyle();
         }
+      }
     }
 }
 

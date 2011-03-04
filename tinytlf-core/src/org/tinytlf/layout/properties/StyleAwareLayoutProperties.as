@@ -52,6 +52,9 @@ import org.tinytlf.styles.StyleAwareActor;
     public function get textIndent():Number {
       return _textIndent;
     }
+    public function set textIndent(value:Number):void {
+      _textIndent = value;
+    }
     
     public function get textAlign():String {
       return _textAlign;

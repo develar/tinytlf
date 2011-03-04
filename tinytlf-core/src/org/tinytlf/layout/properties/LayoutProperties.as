@@ -4,13 +4,21 @@ import org.tinytlf.layout.constraints.ITextConstraint;
 public class LayoutProperties implements ILayoutProperties {
   private static const defaultPadding:EmptyInsets = new EmptyInsets();
 
-  private var _padding:Insets = defaultPadding;
+  public function LayoutProperties(padding:Insets = null) {
+    _padding = padding == null ? defaultPadding : padding;
+  }
+
+  private var _padding:Insets;
   public function get padding():Insets {
     return _padding;
   }
 
+  private var _textIndent:Number;
   public function get textIndent():Number {
-    return 0;
+    return _textIndent;
+  }
+  public function set textIndent(value:Number):void {
+    _textIndent = value;
   }
 
   public function get textAlign():String {

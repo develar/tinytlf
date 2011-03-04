@@ -1,11 +1,11 @@
 package org.tinytlf.layout.properties {
-import org.tinytlf.layout.ITextContainer;
 import org.tinytlf.layout.constraints.ITextConstraint;
 
 public interface ILayoutProperties {
   function get padding():Insets;
 
   function get textIndent():Number;
+  function set textIndent(value:Number):void;
 
   function get textAlign():String;
 
