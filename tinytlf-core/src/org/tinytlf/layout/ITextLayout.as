@@ -6,11 +6,12 @@
  */
 package org.tinytlf.layout
 {
-	import flash.text.engine.TextLine;
-	
-	import org.tinytlf.ITextEngine;
-	
-	/**
+import flash.text.engine.TextBlock;
+import flash.text.engine.TextLine;
+
+import org.tinytlf.ITextEngine;
+
+/**
 	 * ITextLayout is the tinytlf text layout actor. ITextLayout is responsible
 	 * for:
 	 * <ul>
@@ -109,6 +110,8 @@ package org.tinytlf.layout
 		 * @see org.tinytlf.layout.ITextContainer#layout()
 		 */
 		function render():void;
-	}
+
+  function renderInvalidBlock(block:TextBlock, container:ITextContainer):void;
+}
 }
 

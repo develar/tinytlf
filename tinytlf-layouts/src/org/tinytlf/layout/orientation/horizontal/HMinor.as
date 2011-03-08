@@ -28,6 +28,10 @@ import org.tinytlf.util.TinytlfUtil;
 			
 			y = 0;
 		}
+    
+    override public function preLayoutInvalidBlock(block:TextBlock):void {
+      y = block.firstInvalidLine.y - block.firstInvalidLine.ascent;
+    }
 		
 		override public function prepForTextBlock(block:TextBlock, line:TextLine):void
 		{

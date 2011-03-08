@@ -6,12 +6,13 @@
  */
 package org.tinytlf.layout
 {
-    import flash.display.*;
-    import flash.text.engine.*;
-    
-    import org.tinytlf.ITextEngine;
-    
-	/**
+import flash.display.*;
+import flash.text.engine.TextBlock;
+import flash.text.engine.TextLine;
+
+import org.tinytlf.ITextEngine;
+
+/**
 	 * <code>ITextContainer</code> is the layout controller for a 
 	 * DisplayObjectContainer used in text layout. Tinytlf renders TextLines
 	 * across multiple DisplayObjectContainers, and it delegates control 
@@ -185,6 +186,8 @@ package org.tinytlf.layout
 		 * 
 		 */
         function resetShapes():void;
-    }
+
+    function preLayoutInvalidBlock(block:TextBlock):void;
+  }
 }
 

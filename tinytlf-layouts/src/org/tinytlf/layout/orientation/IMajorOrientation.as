@@ -18,6 +18,6 @@ package org.tinytlf.layout.orientation
 		 * IFlowLayout to block processing any more IFlowLayoutElements, false
 		 * if it should continue.
 		 */
-		function registerConstraint(line:TextLine, atomIndex:int):Boolean;
-	}
+		function registerConstraint(line:TextLine, atomIndex:int):Boolean; 
+  }
 }

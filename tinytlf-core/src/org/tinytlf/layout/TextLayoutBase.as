@@ -6,16 +6,15 @@
  */
 package org.tinytlf.layout
 {
-	import flash.text.engine.*;
-	
-	import org.tinytlf.ITextEngine;
-	import org.tinytlf.analytics.ITextEngineAnalytics;
-	import org.tinytlf.conversion.ITextBlockFactory;
-	import org.tinytlf.layout.properties.*;
-	import org.tinytlf.util.TinytlfUtil;
-	import org.tinytlf.util.fte.TextBlockUtil;
-	
-	public class TextLayoutBase implements ITextLayout
+import flash.text.engine.*;
+
+import org.tinytlf.ITextEngine;
+import org.tinytlf.analytics.ITextEngineAnalytics;
+import org.tinytlf.conversion.ITextBlockFactory;
+import org.tinytlf.layout.properties.*;
+import org.tinytlf.util.fte.TextBlockUtil;
+
+public class TextLayoutBase implements ITextLayout
 	{
 		protected var _engine:ITextEngine;
 		
@@ -148,8 +147,14 @@ package org.tinytlf.layout
         container.postLayout();
       }
 		}
-		
-		/**
+
+  public function renderInvalidBlock(block:TextBlock, container:ITextContainer):void {
+    container.preLayoutInvalidBlock(block);
+    renderInvalidLines(block, container);
+    container.postLayout();
+  }
+
+  /**
 		 * Renders all the lines from the input TextBlock into the containers,
 		 * starting from the container specified by <code>startContainer</code>.
 		 *
@@ -176,26 +181,23 @@ package org.tinytlf.layout
 			
 			return renderAllLines(block, startContainer);
 		}
-		
-		protected function renderInvalidLines(block:TextBlock, container:ITextContainer):ITextContainer
-		{
-			// Check if there's any lines we need to render at the end
-			// of the TextBlock.
-			// Note: not sure if this case actually happens...
-			if(block.firstLine && !block.firstInvalidLine)
-			{
-				return renderLines(block, block.lastLine, container);
-			}
-			// Otherwise re-render the invalid lines.
-			else if(block.firstInvalidLine)
-			{
-				return renderLines(block, block.firstInvalidLine.previousLine, container);
-			}
-			
-			return container;
-		}
-		
-		protected function renderAllLines(block:TextBlock, container:ITextContainer):ITextContainer
+
+  public function renderInvalidLines(block:TextBlock, container:ITextContainer):ITextContainer {
+    // Check if there's any lines we need to render at the end
+    // of the TextBlock.
+    // Note: not sure if this case actually happens...
+    if (block.firstLine && !block.firstInvalidLine) {
+      return renderLines(block, block.lastLine, container);
+    }
+    // Otherwise re-render the invalid lines.
+    else if (block.firstInvalidLine) {
+      return renderLines(block, block.firstInvalidLine.previousLine, container);
+    }
+
+    return container;
+  }
+
+  protected function renderAllLines(block:TextBlock, container:ITextContainer):ITextContainer
 		{
 			return renderLines(block, null, container);
 		}

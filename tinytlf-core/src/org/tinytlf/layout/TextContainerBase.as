@@ -275,22 +275,31 @@ public class TextContainerBase implements ITextContainer
 		{
 			return line.parent == lines;
 		}
-		
-		public function preLayout():void
-		{	
-      var n:int = visibleLines.length;
-      youngOrphanLinesIndices.length = n;
-			// Parse through and look for invalid lines.
-			for(var i:int = 0; i < n; i += 1)
-			{
-				var line:TextLine = visibleLines[i];
-				if (line.validity != TextLineValidity.VALID) {
-				  youngOrphanLinesIndices[youngOrphanCount++] = i;
-        }
-			}
-		}
 
-    public function postLayout():void {
+  public function preLayout():void {
+    var n:int = visibleLines.length;
+    youngOrphanLinesIndices.length = n;
+    // Parse through and look for invalid lines.
+    for (var i:int = 0; i < n; i += 1) {
+      var line:TextLine = visibleLines[i];
+      if (line.validity != TextLineValidity.VALID) {
+        youngOrphanLinesIndices[youngOrphanCount++] = i;
+      }
+    }
+  }
+
+  public function preLayoutInvalidBlock(block:TextBlock):void {
+    youngOrphanLinesIndices.length = 2;
+    var line:TextLine = block.firstInvalidLine;
+    do {
+      if (line.validity != TextLineValidity.VALID) {
+        youngOrphanLinesIndices[youngOrphanCount++] = visibleLines.indexOf(line);
+      }
+    }
+    while ((line = line.nextLine) != null);
+  }
+
+  public function postLayout():void {
       if (youngOrphanCount == 0) {
         orphanLines.length = orphanCount;
         youngOrphanLinesIndices.length = 0;

@@ -123,6 +123,12 @@ public class ConstraintTextContainer extends TextContainerBase implements IConst
 			major.preLayout();
 			minor.preLayout();
 		}
+  
+  override public function preLayoutInvalidBlock(block:TextBlock):void {
+    super.preLayoutInvalidBlock(block);
+    
+    minor.preLayoutInvalidBlock(block);
+  }
 		
 		override public function postLayout():void
 		{

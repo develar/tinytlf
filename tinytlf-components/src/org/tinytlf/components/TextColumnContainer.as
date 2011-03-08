@@ -265,5 +265,9 @@ package org.tinytlf.components
 				explicitWidth || measuredWidth || width, 
 				explicitHeight || measuredHeight || height);
 		}
-	}
+    
+    public function preLayoutInvalidBlock(block:TextBlock):void {
+      container.preLayoutInvalidBlock(block);
+    }
+  }
 }

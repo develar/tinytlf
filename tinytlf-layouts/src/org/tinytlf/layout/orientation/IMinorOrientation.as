@@ -1,6 +1,7 @@
 package org.tinytlf.layout.orientation
 {
-	import flash.text.engine.TextLine;
+import flash.text.engine.TextBlock;
+import flash.text.engine.TextLine;
 
 	public interface IMinorOrientation extends IFlowOrientation
 	{
@@ -9,5 +10,9 @@ package org.tinytlf.layout.orientation
 		 * target container, false if we're still within bounds.
 		 */
 		function checkTargetBounds(latestLine:TextLine):Boolean;
-	}
+
+    function preLayoutInvalidBlock(block:TextBlock):void;
+
+    
+  }
 }

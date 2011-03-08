@@ -32,6 +32,9 @@ public class TextFlowOrientationBase implements IMajorOrientation, IMinorOrienta
 		public function preLayout():void
 		{
 		}
+  
+  public function preLayoutInvalidBlock(block:TextBlock):void {
+  }
 		
 		public function postLayout():void
 		{
@@ -164,5 +167,5 @@ public class TextFlowOrientationBase implements IMajorOrientation, IMinorOrienta
 		{
 			return target ? target.engine : null;
 		}
-	}
+}
 }

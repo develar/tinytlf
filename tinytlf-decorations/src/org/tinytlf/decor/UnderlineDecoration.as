@@ -22,7 +22,7 @@ public class UnderlineDecoration extends ContentElementDecoration
 		override protected function processContentElement(element:ContentElement):void
 		{
 			super.processContentElement(element);
-			setStyle("underlineThickness", element.elementFormat.getFontMetrics.underlineThickness);
+			setStyle("underlineThickness", element.elementFormat.getFontMetrics().underlineThickness);
 		}
 		
 		override protected function processTLMR(tlmr:TextLineMirrorRegion):Rectangle
