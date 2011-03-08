@@ -13,7 +13,7 @@ public class LayoutProperties implements ILayoutProperties {
     return _padding;
   }
 
-  private var _textIndent:Number;
+  private var _textIndent:Number = 0;
   public function get textIndent():Number {
     return _textIndent;
   }

@@ -1,14 +1,13 @@
 package org.tinytlf.layout.orientation.horizontal
 {
-	import flash.text.engine.*;
-	
-	import org.tinytlf.layout.*;
-	import org.tinytlf.layout.constraints.*;
-	import org.tinytlf.layout.constraints.horizontal.HConstraintFactory;
-	import org.tinytlf.layout.properties.*;
-	import org.tinytlf.util.TinytlfUtil;
-	
-	/**
+import flash.text.engine.*;
+
+import org.tinytlf.layout.*;
+import org.tinytlf.layout.constraints.*;
+import org.tinytlf.layout.constraints.horizontal.HConstraintFactory;
+import org.tinytlf.layout.properties.*;
+
+/**
 	 * The IMajorOrientation implementation for left-to-right languages.
 	 */
 	public class LTRMajor extends HOrientationBase
@@ -69,19 +68,19 @@ package org.tinytlf.layout.orientation.horizontal
 				}
 			}
 			
-			evaluateConstraints(block);
+			evaluateConstraints(block.userData);
 		}
 		
 		override public function getLineSize(block:TextBlock, previousLine:TextLine):Number
 		{
-			evaluateConstraints(block);
+			evaluateConstraints(block.userData);
 			
 			return rightConstraint - leftConstraint;
 		}
 		
 		override public function position(line:TextLine):void
 		{
-			evaluateConstraints(line);
+			evaluateConstraints(line.textBlock.userData);
 			
 			switch(ILayoutProperties(line.textBlock.userData).textAlign)
 			{
@@ -120,29 +119,28 @@ package org.tinytlf.layout.orientation.horizontal
 				line.x = constraint.majorValue;
 			}
 			
-			evaluateConstraints(line);
+			evaluateConstraints(line.textBlock.userData);
 		}
 		
-		private function evaluateConstraints(around:Object):void
+		private function evaluateConstraints(layoutProperties:LayoutProperties):void
 		{
 			var c:ITextConstraint;
 			var constraints:Vector.<ITextConstraint> = target.constraints;
 			var n:int = constraints.length;
 			
 			var minorValue:Number = target.minorDirection.value;
-			var l:Number = 0;
-			var totalWidth:Number = getTotalSize();
+			var l:Number = layoutProperties.padding.left;
+			var totalWidth:Number = getTotalSize() - layoutProperties.padding.width;
 			var r:Number = totalWidth;
 			var majorValue:Number = -1;
 			
-			for(var i:int = 0; i < n; i += 1)
+			for(var i:int = 0; i < n; i++)
 			{
 				c = constraints[i];
-				
 				majorValue = c.getMajorValue(minorValue, l);
-				
-				if(majorValue == -1)
-					continue;
+        if (majorValue == -1) {
+          continue;
+        }
 				
 				if(c.float)
 				{
@@ -171,7 +169,7 @@ package org.tinytlf.layout.orientation.horizontal
 			leftConstraint = Math.min(l, totalWidth);
 			rightConstraint = Math.max(r, 0);
 			
-			switch(TinytlfUtil.getLP(around).textAlign)
+			switch(layoutProperties.textAlign)
 			{
 				case TextAlign.LEFT:
 				case TextAlign.JUSTIFY:
