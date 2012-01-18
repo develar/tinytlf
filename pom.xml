@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.flyti</groupId>
     <artifactId>flash-forge</artifactId>
-    <version>22</version>
+    <version>27</version>
   </parent>
 
   <groupId>org.tinytlf</groupId>
@@ -15,14 +15,14 @@
 
   <modules>
     <module>tinytlf-core</module>
-    <module>tinytlf-components</module>
+    <!--<module>tinytlf-components</module>-->
     <module>tinytlf-fte-utils</module>
-    <module>tinytlf-gestures</module>
+    <!--<module>tinytlf-gestures</module>-->
     <module>tinytlf-layouts</module>
-    <module>tinytlf-model</module>
-    <module>tinytlf-xhtml</module>
-    <module>tinytlf-decorations</module>
-    <module>tinytlf-edit</module>
+    <!--<module>tinytlf-model</module>-->
+    <!--<module>tinytlf-xhtml</module>-->
+    <!--<module>tinytlf-decorations</module>-->
+    <!--<module>tinytlf-edit</module>-->
     <!--<module>test</module>-->
   </modules>
 
@@ -61,7 +61,6 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.sonatype.flexmojos</groupId>

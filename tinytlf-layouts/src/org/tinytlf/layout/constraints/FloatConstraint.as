@@ -41,6 +41,11 @@ public class FloatConstraint implements ITextConstraint {
   }
 
   public function getMajorValue(atMinor:Number, fromMajor:Number):Number {
+    // for first line atMinor equals 0, so, overlap occurred (we need more robust float block implementations)
+    if (atMinor == 0 && (line.ascent - line.y) < 0.1) {
+      return line.x;
+    }
+    
     if (atMinor < line.y || atMinor >= (line.y + line.descent)) {
       return -1;
     }
